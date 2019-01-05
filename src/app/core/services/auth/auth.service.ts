@@ -1,24 +1,22 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, from } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { Store } from '@ngrx/store';
 import { auth } from 'firebase';
-import { User } from 'src/app/models/user';
+import { from, Observable } from 'rxjs';
+import { AppState } from 'src/app/app-store/app-state';
+import { AuthStateChange } from 'src/app/app-store/auth/auth.actions';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private authLoaded$ = new BehaviorSubject<boolean>(false);
-  private user$ = new BehaviorSubject<User>(undefined);
-  constructor(private fireAuth: AngularFireAuth) {
-    this.fireAuth.authState.subscribe(user => this.user$.next(user));
-  }
-
-  public get authLoaded(): Observable<boolean> {
-    return this.authLoaded$;
-  }
-  public get user(): Observable<User> {
-    return this.user$;
+  constructor(
+    private fireAuth: AngularFireAuth,
+    private store: Store<AppState>
+  ) {
+    this.fireAuth.authState.subscribe(user =>
+      this.store.dispatch(new AuthStateChange(user))
+    );
   }
 
   public googleAuthLoginPopup(): Observable<auth.UserCredential> {

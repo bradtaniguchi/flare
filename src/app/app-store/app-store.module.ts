@@ -6,6 +6,7 @@ import { environment } from 'src/environments/environment';
 import { AppState } from './app-state';
 import { LoadingReducer } from './loading/loading.reducer';
 import { SyncReducer } from './sync/sync.reducer';
+import { AuthReducer } from './auth/auth.reducer';
 
 @NgModule({
   declarations: [],
@@ -13,6 +14,7 @@ import { SyncReducer } from './sync/sync.reducer';
     environment.production ? [] : StoreDevtoolsModule.instrument(),
     EffectsModule.forRoot([]),
     StoreModule.forRoot<AppState>({
+      auth: AuthReducer,
       loading: LoadingReducer,
       sync: SyncReducer
     })

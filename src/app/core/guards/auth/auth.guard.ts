@@ -1,24 +1,23 @@
 import { Injectable } from '@angular/core';
 import {
-  CanActivate,
   ActivatedRouteSnapshot,
-  RouterStateSnapshot,
-  Router,
+  CanActivate,
   CanLoad,
   Route,
+  Router,
+  RouterStateSnapshot,
   UrlSegment
 } from '@angular/router';
+import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { Store } from '@ngrx/store';
+import { take, tap } from 'rxjs/operators';
 import { AppState } from 'src/app/app-store/app-state';
-import { map, tap, take } from 'rxjs/operators';
-import { AuthService } from '../../services/auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthGuard implements CanActivate, CanLoad {
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(private store: Store<AppState>, private router: Router) {}
 
   canLoad(
     route: Route,
@@ -34,9 +33,8 @@ export class AuthGuard implements CanActivate, CanLoad {
   }
 
   private canDo(): Observable<boolean> {
-    console.log('can do called');
-    return this.auth.user.pipe(
-      map(user => !!user),
+    return this.store.pipe(
+      select(state => !!state.auth.user),
       tap(isAuthenticated => {
         if (!isAuthenticated) {
           console.log('NOT AUTHENTICATED');
