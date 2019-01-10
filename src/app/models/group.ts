@@ -1,6 +1,4 @@
 import { GenericModel } from './generic-model';
-import { DeckId } from './deck';
-import { UserId } from './user';
 
 export type GroupId = string;
 
@@ -25,12 +23,7 @@ export class Group extends GenericModel {
   private: boolean;
 
   /**
-   * A map of decks "under" this group
+   * The number of decks this group has
    */
-  decks?: Map<DeckId, true>;
-
-  /**
-   * A map of users this group is available too
-   */
-  users?: Map<UserId, true>;
+  deckCount?: number;
 }

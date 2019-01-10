@@ -7,12 +7,14 @@ import { AppState } from './app-state';
 import { LoadingReducer } from './loading/loading.reducer';
 import { SyncReducer } from './sync/sync.reducer';
 import { AuthReducer } from './auth/auth.reducer';
+import { AuthEffects } from './auth/auth.effects';
+import { CardEffects } from './card/card.effects';
 
 @NgModule({
   declarations: [],
   imports: [
     environment.production ? [] : StoreDevtoolsModule.instrument(),
-    EffectsModule.forRoot([]),
+    EffectsModule.forRoot([AuthEffects, CardEffects]),
     StoreModule.forRoot<AppState>({
       auth: AuthReducer,
       loading: LoadingReducer,

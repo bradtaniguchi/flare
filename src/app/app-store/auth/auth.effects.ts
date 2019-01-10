@@ -18,7 +18,10 @@ export class AuthEffects {
     ofType(AuthActionTypes.Login),
     mergeMap(() => this.auth.googleAuthLoginPopup()),
     map(userCredentials => new AuthLoginSuccess(userCredentials.user)),
-    catchError(err => of(new AuthLoginFailed(err)))
+    catchError(err => {
+      console.error(err);
+      return of(new AuthLoginFailed(err));
+    })
   );
 
   @Effect()

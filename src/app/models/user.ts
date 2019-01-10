@@ -1,23 +1,47 @@
-import { CardId } from './card';
-import { DeckId } from './deck';
-import { GroupId } from './group';
-import { BareUid } from './bare-uid';
-
 export type UserId = string;
 export interface User extends firebase.User {
   uid: UserId;
-  /**
-   * The cards the user has access too overall
-   */
-  cards?: Map<CardId, BareUid>;
 
   /**
-   * The decks the user has access to overall
+   * Permissions for organizations
    */
-  decks?: Map<DeckId, BareUid>;
+  orgs: {
+    [key: string]: true;
+  };
 
   /**
-   * The groups the user has access to overall
+   * Permissions for all cards
    */
-  groups?: Map<GroupId, BareUid>;
+  cards?: {
+    [key: string]: true;
+  };
+
+  /**
+   * Permissions for all decks
+   */
+  decks?: {
+    [key: string]: true;
+  };
+
+  /**
+   * Permissions for all groups
+   */
+  groups?: {
+    [key: string]: true;
+  };
+
+  /**
+   * The number of cards the user has access to
+   */
+  cardsCount?: number;
+
+  /**
+   * The number of decks the user has access to
+   */
+  deckCount?: number;
+
+  /**
+   * The number of groups the user has access to
+   */
+  groupCount?: number;
 }

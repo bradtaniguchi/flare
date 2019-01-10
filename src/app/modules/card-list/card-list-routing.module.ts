@@ -4,7 +4,7 @@ import { CardListComponent } from './card-list.component';
 
 const routes: Routes = [
   {
-    path: '',
+    path: ':deckId',
     component: CardListComponent
   }
 ];

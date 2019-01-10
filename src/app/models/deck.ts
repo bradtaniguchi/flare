@@ -1,7 +1,6 @@
+import { Card, CardId } from './card';
 import { GenericModel } from './generic-model';
-import { CardId } from './card';
 import { GroupId } from './group';
-import { UserId } from './user';
 
 export type DeckId = string;
 
@@ -18,22 +17,12 @@ export class Deck extends GenericModel {
   description: string;
 
   /**
-   * If this deck can be shared with other users/groups
+   * Card counts
    */
-  private: boolean;
+  cardsCount?: number;
 
   /**
-   * A map of cards part of this deck
+   * The group this deck belongs too
    */
-  cards?: Map<CardId, true>;
-
-  /**
-   * A map of groups this deck is part of.
-   */
-  groups?: Map<GroupId, true>;
-
-  /**
-   * A map of users this deck is available too
-   */
-  users?: Map<UserId, true>;
+  group?: GroupId;
 }

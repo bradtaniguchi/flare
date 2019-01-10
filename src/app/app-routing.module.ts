@@ -1,14 +1,46 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './core/guards/auth/auth.guard';
+import { LoginGuard } from './core/guards/login/login.guard';
 
 const routes: Routes = [
   {
-    path: 'cards',
-    loadChildren: './modules/card-list/card-list.module#CardListModule'
+    path: 'login',
+    canLoad: [LoginGuard],
+    loadChildren: './modules/login/login.module#LoginModule',
+    pathMatch: 'full'
   },
   {
-    path: 'cards/create',
-    loadChildren: './modules/card-create/card-create.module#CardCreateModule'
+    path: '',
+    children: [
+      {
+        path: 'cards',
+        loadChildren: './modules/card-list/card-list.module#CardListModule',
+        canLoad: [AuthGuard],
+        pathMatch: 'full'
+      },
+      {
+        path: 'cards/create',
+        loadChildren:
+          './modules/card-create/card-create.module#CardCreateModule',
+        canLoad: [AuthGuard],
+        pathMatch: 'full'
+      },
+      {
+        path: '',
+        redirectTo: 'cards',
+        pathMatch: 'full'
+      },
+      {
+        path: '**',
+        redirectTo: 'cards'
+      }
+    ]
+  },
+  {
+    path: '**',
+    // TODO: change to dashboard
+    redirectTo: 'cards'
   }
 ];
 

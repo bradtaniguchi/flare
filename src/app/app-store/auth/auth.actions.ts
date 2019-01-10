@@ -24,7 +24,7 @@ export class AuthLogin implements Action {
 }
 export class AuthLoginSuccess implements Action {
   readonly type = AuthActionTypes.LoginSuccess;
-  constructor(public payload: User) {}
+  constructor(public payload: Partial<User>) {}
 }
 export class AuthLoginFailed implements Action {
   readonly type = AuthActionTypes.LoginFailed;
@@ -34,7 +34,7 @@ export class AuthLoginFailed implements Action {
 // STATE CHANGE
 export class AuthStateChange implements Action {
   readonly type = AuthActionTypes.StateChange;
-  constructor(public payload: User) {}
+  constructor(public payload: Partial<User>) {}
 }
 // LOGOUT
 export class AuthLogout implements Action {
