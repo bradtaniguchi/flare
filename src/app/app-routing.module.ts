@@ -27,8 +27,14 @@ const routes: Routes = [
         pathMatch: 'full'
       },
       {
+        path: 'dashboard',
+        loadChildren: './modules/dashboard/dashboard.module#DashboardModule',
+        canLoad: [AuthGuard],
+        pathMatch: 'full'
+      },
+      {
         path: '',
-        redirectTo: 'cards',
+        redirectTo: 'dashboard',
         pathMatch: 'full'
       },
       {
