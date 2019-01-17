@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { forkJoin, from, Observable } from 'rxjs';
+import { forkJoin, from, Observable, combineLatest, of } from 'rxjs';
 import { Collections } from 'src/app/config/collections';
 import { Card } from 'src/app/models/card';
 import { Deck } from 'src/app/models/deck';
@@ -56,6 +56,22 @@ export class CardService extends GenericDbService {
         .doc(uid)
         .update(card)
     );
+  }
+
+  /**
+   * Loads the "recent" cards for a given user
+   * @param params general params
+   */
+  public listRecent(params: { user: User }): Observable<Card[]> {
+    const { user } = params;
+    const recentCards = Object.keys(user.recentCards || {});
+    const cards$ = recentCards.map(cardId =>
+      this.db
+        .collection(Collections.Cards)
+        .doc<Card>(cardId)
+        .valueChanges()
+    );
+    return recentCards.length ? combineLatest(cards$) : of([]);
   }
 
   /**

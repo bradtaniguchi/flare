@@ -9,17 +9,21 @@ import { SyncReducer } from './sync/sync.reducer';
 import { AuthReducer } from './auth/auth.reducer';
 import { AuthEffects } from './auth/auth.effects';
 import { CardEffects } from './card/card.effects';
+import { CardReducer } from './card/card.reducer';
+import { DeckReducer } from './deck/deck.reducer';
 
 @NgModule({
   declarations: [],
   imports: [
-    environment.production ? [] : StoreDevtoolsModule.instrument(),
     EffectsModule.forRoot([AuthEffects, CardEffects]),
     StoreModule.forRoot<AppState>({
       auth: AuthReducer,
       loading: LoadingReducer,
-      sync: SyncReducer
-    })
+      sync: SyncReducer,
+      cards: CardReducer,
+      decks: DeckReducer
+    }),
+    environment.production ? [] : StoreDevtoolsModule.instrument()
   ]
 })
 export class AppStoreModule {}

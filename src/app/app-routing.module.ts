@@ -39,14 +39,13 @@ const routes: Routes = [
       },
       {
         path: '**',
-        redirectTo: 'cards'
+        redirectTo: 'dashboard'
       }
     ]
   },
   {
     path: '**',
-    // TODO: change to dashboard
-    redirectTo: 'cards'
+    redirectTo: 'dashboard'
   }
 ];
 

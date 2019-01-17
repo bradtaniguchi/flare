@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { forkJoin, Observable } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 import { Collections } from 'src/app/config/collections';
 import { Deck } from 'src/app/models/deck';
 import { User } from 'src/app/models/user';
 import { GenericDbService } from '../generic-db/generic-db.service';
+import { combineLatest } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -42,5 +43,21 @@ export class DeckService extends GenericDbService {
         });
       })
     );
+  }
+
+  /**
+   * Returns a list of all the decks the user has access too
+   * @param params general params
+   */
+  public list(params: { user: User }): Observable<Deck[]> {
+    const { user } = params;
+    const decks = Object.keys(user.decks || {});
+    const decks$ = decks.map(deckId =>
+      this.db
+        .collection(Collections.Decks)
+        .doc<Deck>(deckId)
+        .valueChanges()
+    );
+    return decks.length ? combineLatest(decks$) : of([]);
   }
 }

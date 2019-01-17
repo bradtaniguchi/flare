@@ -1,13 +1,23 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { Action } from '@ngrx/store';
-import { CardActionTypes } from './card.actions';
-import { mergeMap } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import { of } from 'rxjs';
+import { catchError, map, switchMap, withLatestFrom } from 'rxjs/operators';
 import { CardService } from 'src/app/core/services/card/card.service';
+import { AppState } from '../app-state';
+import {
+  CardActionTypes,
+  SearchRecentCardsFailed,
+  SearchRecentCardsSuccess
+} from './card.actions';
 
 @Injectable()
 export class CardEffects {
-  constructor(private actions$: Actions, private card: CardService) {}
+  constructor(
+    private store: Store<AppState>,
+    private actions$: Actions,
+    private card: CardService
+  ) {}
   // @Effect()
   // public create$ = this.actions$.pipe(ofType(CardActionTypes.Create),
   // // mergeMap(action => this.card.create()));
@@ -23,4 +33,16 @@ export class CardEffects {
   //     )
   //   )
   // );
+
+  @Effect()
+  public searchRecent$ = this.actions$.pipe(
+    ofType(CardActionTypes.SearchRecent),
+    withLatestFrom(this.store.select(state => state.auth.user)),
+    switchMap(([action, user]) => this.card.listRecent({ user })),
+    map(res => new SearchRecentCardsSuccess(res)),
+    catchError(err => {
+      console.error(err);
+      return of(new SearchRecentCardsFailed());
+    })
+  );
 }

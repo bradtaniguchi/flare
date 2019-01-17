@@ -5,6 +5,27 @@
   width: 100%;
 }
 
+.full-height {
+  height: 100%;
+}
+
+.margin {
+  margin: 16px;
+}
+
+.margin-top-bottom {
+  margin: 16px 0;
+}
+
+.view-container-padding {
+  padding: 16px;
+}
+
 .main-view-container {
   height: calc(100% - 64px);
+}
+
+mat-sidenav {
+  width: 15%;
+  min-width: 15%;
 }

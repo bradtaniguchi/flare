@@ -9,8 +9,9 @@ export function AuthReducer(
     case AuthActionTypes.LoginSuccess:
     case AuthActionTypes.StateChange:
       return { user: action.payload };
-    case AuthActionTypes.Logout:
     default:
+      return state;
+    case AuthActionTypes.Logout:
       return {};
   }
 }

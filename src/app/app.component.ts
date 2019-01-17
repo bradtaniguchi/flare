@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'app-root',
   template: `
-    <app-header></app-header>
+    <app-header (toggleNav)="sidenav.toggle()"></app-header>
     <app-loading-bar></app-loading-bar>
     <mat-sidenav-container class="main-view-container">
       <mat-sidenav #sidenav> <app-side-nav></app-side-nav> </mat-sidenav>

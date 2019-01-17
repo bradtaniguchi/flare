@@ -5,14 +5,14 @@ export interface User extends firebase.User {
   /**
    * Permissions for organizations
    */
-  orgs: {
+  orgs?: {
     [key: string]: true;
   };
 
   /**
-   * Permissions for all cards
+   * Recent Cards
    */
-  cards?: {
+  recentCards?: {
     [key: string]: true;
   };
 
