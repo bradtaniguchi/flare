@@ -1,9 +1,4 @@
-import {
-  Component,
-  OnInit,
-  ChangeDetectionStrategy,
-  Input
-} from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ControlContainer, NgForm } from '@angular/forms';
 import { Deck } from 'src/app/models/deck';
 
@@ -12,7 +7,7 @@ import { Deck } from 'src/app/models/deck';
   template: `
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Deck</mat-label>
-      <mat-select [ngModel]="deck" matInput name="deck">
+      <mat-select [ngModel]="deck" matInput name="deck" [disabled]="disabled">
         <mat-option></mat-option>
         <mat-option [value]="deck" *ngFor="let deck of decks">
           {{ deck.name }}
@@ -27,6 +22,7 @@ import { Deck } from 'src/app/models/deck';
 export class DeckListFieldComponent implements OnInit {
   @Input() deck: Deck;
   @Input() decks: Deck[];
+  @Input() disabled: boolean;
   constructor() {}
 
   ngOnInit() {}

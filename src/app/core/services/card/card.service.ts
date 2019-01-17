@@ -6,6 +6,7 @@ import { Card } from 'src/app/models/card';
 import { Deck } from 'src/app/models/deck';
 import { User } from 'src/app/models/user';
 import { GenericDbService } from '../generic-db/generic-db.service';
+import { CreateCardForm } from 'src/app/modules/card-create/create-card-form';
 
 @Injectable({
   providedIn: 'root'
@@ -22,10 +23,20 @@ export class CardService extends GenericDbService {
    * the following collections:
    * 1. Cards collection - adds the card
    * 2. Deck collection - updates the number of cards for the deck
-   * @param card the Card to create
+   * @param form the raw form data to create a card from
+   * @param user the user that is creating the card
    */
-  public create(card: Card, user: User): Observable<void[]> {
+  public create(form: CreateCardForm, user: User): Observable<void[]> {
     const uid = this.db.createId();
+    const card: Card = {
+      front: form.front,
+      back: form.back,
+      createdBy: user.uid,
+      createdOn: new Date(),
+      deck: form.deck ? form.deck.uid : undefined,
+      tags: [],
+      uid
+    };
     super.tagModel(card, user);
     card.uid = uid;
     const deckRef = this.db.firestore
@@ -33,6 +44,7 @@ export class CardService extends GenericDbService {
       .doc(card.deck);
 
     return forkJoin(
+      // TODO: update recent cards for user
       this.db
         .collection(Collections.Cards)
         .doc(uid)
