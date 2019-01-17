@@ -47,4 +47,5 @@ Thumbs.db
 
 
 # project environment variables
-env.js
+.env
+/src/app/config.ts

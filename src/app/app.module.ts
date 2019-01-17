@@ -11,7 +11,7 @@ import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
 import { Store } from '@ngrx/store';
 import { initAppFactory } from './init';
-
+import { CONFIG } from './config';
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -22,7 +22,7 @@ import { initAppFactory } from './init';
     AppStoreModule,
     CoreModule,
     // firebase
-    AngularFireModule.initializeApp((window as any).__env),
+    AngularFireModule.initializeApp(CONFIG.firebase),
     AngularFireAuthModule,
     AngularFirestoreModule,
     // angular material
