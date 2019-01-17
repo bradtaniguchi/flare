@@ -9,7 +9,11 @@ export enum DeckActionTypes {
   SearchStop = '[Deck] searchStop'
 }
 
-export type DeckActions = CreateDeck;
+export type DeckActions =
+  | CreateDeck
+  | SearchDecks
+  | SearchDecksSuccess
+  | SearchDecksFailed;
 
 export class CreateDeck implements Action {
   readonly type = DeckActionTypes.Create;

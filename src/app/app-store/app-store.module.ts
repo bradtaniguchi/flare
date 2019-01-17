@@ -11,17 +11,26 @@ import { AuthEffects } from './auth/auth.effects';
 import { CardEffects } from './card/card.effects';
 import { CardReducer } from './card/card.reducer';
 import { DeckReducer } from './deck/deck.reducer';
+import { GroupReducer } from './group/group.reducer';
+import { DeckEffects } from './deck/deck.effects';
+import { GroupEffects } from './group/group.effects';
 
 @NgModule({
   declarations: [],
   imports: [
-    EffectsModule.forRoot([AuthEffects, CardEffects]),
+    EffectsModule.forRoot([
+      AuthEffects,
+      CardEffects,
+      DeckEffects,
+      GroupEffects
+    ]),
     StoreModule.forRoot<AppState>({
       auth: AuthReducer,
       loading: LoadingReducer,
       sync: SyncReducer,
       cards: CardReducer,
-      decks: DeckReducer
+      decks: DeckReducer,
+      groups: GroupReducer
     }),
     environment.production ? [] : StoreDevtoolsModule.instrument()
   ]
