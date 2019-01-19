@@ -1,13 +1,14 @@
 import { Location } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { AppState } from 'src/app/app-store/app-state';
 import { CreateCard } from 'src/app/app-store/card/card.actions';
 import { Card } from 'src/app/models/card';
 import { Group } from 'src/app/models/group';
 import { CreateCardForm } from './create-card-form';
+import { SearchGroups } from 'src/app/app-store/group/group.actions';
 
 @Component({
   selector: 'app-card-create',
@@ -47,11 +48,14 @@ export class CardCreateComponent implements OnInit {
       name: 'deck2'
     }
   ];
-  public groups$: Observable<Group>;
+  public groups$: Observable<Group[]>;
   public loading$: Observable<boolean>;
   constructor(private location: Location, private store: Store<AppState>) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.store.dispatch(new SearchGroups());
+    this.groups$ = this.store.pipe(select(state => state.groups.groups));
+  }
 
   groupHasValue(form: NgForm): boolean {
     return !!(
