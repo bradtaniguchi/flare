@@ -1,5 +1,6 @@
 import { Action } from '@ngrx/store';
 import { Group } from 'src/app/models/group';
+import { QueryFn } from '@angular/fire/firestore';
 
 export enum GroupActionTypes {
   Create = '[Group] create',
@@ -21,7 +22,7 @@ export class CreateGroup implements Action {
 
 export class SearchGroups implements Action {
   readonly type = GroupActionTypes.Search;
-  constructor() {}
+  constructor(public payload?: QueryFn) {}
 }
 
 export class SearchGroupsSuccess implements Action {

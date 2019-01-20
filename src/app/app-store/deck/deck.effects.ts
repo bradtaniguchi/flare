@@ -5,11 +5,13 @@ import { Effect, Actions, ofType } from '@ngrx/effects';
 import {
   DeckActionTypes,
   SearchDecksFailed,
-  SearchDecksSuccess
+  SearchDecksSuccess,
+  SearchDecks
 } from './deck.actions';
 import { withLatestFrom, switchMap, catchError, map } from 'rxjs/operators';
 import { DeckService } from 'src/app/core/services/deck/deck.service';
 import { of } from 'rxjs';
+import { User } from 'src/app/models/user';
 
 @Injectable()
 export class DeckEffects {
@@ -23,7 +25,9 @@ export class DeckEffects {
   public search$ = this.actions$.pipe(
     ofType(DeckActionTypes.Search),
     withLatestFrom(this.store.select(state => state.auth.user)),
-    switchMap(([action, user]) => this.deck.list({ user })),
+    switchMap(([action, user]: [SearchDecks, User]) =>
+      this.deck.list({ user, queryFn: action.payload })
+    ),
     map(res => new SearchDecksSuccess(res)),
     catchError(err => {
       console.error(err);

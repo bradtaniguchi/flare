@@ -1,4 +1,10 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  Output,
+  EventEmitter
+} from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { AppState } from 'src/app/app-store/app-state';
 import { AuthLogout } from 'src/app/app-store/auth/auth.actions';
@@ -27,18 +33,14 @@ import { take, filter } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SideNavComponent implements OnInit {
+  @Output() close = new EventEmitter();
   constructor(private store: Store<AppState>, private router: Router) {}
 
   ngOnInit() {}
 
   logout() {
     this.store.dispatch(new AuthLogout());
-    this.store
-      .pipe(
-        select(state => state.auth.user),
-        filter(noUser => !!noUser),
-        take(1)
-      )
-      .subscribe(() => this.router.navigate(['/login']));
+    this.close.emit();
+    this.router.navigate(['/login']);
   }
 }

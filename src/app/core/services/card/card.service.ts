@@ -7,6 +7,7 @@ import { Deck } from 'src/app/models/deck';
 import { User } from 'src/app/models/user';
 import { GenericDbService } from '../generic-db/generic-db.service';
 import { CreateCardForm } from 'src/app/modules/card-create/create-card-form';
+import { switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -44,11 +45,19 @@ export class CardService extends GenericDbService {
       .doc(card.deck);
 
     return forkJoin(
-      // TODO: update recent cards for user
+      // add the card to the user, so they have "access"
+      this.db
+        .collection(Collections.Users)
+        .doc(user.uid)
+        .collection(Collections.Cards)
+        .doc(uid)
+        .set({ uid: true }),
+      // create the actual card
       this.db
         .collection(Collections.Cards)
         .doc(uid)
         .set(card),
+      // add the card to the given deck, if there is one.
       this.db.firestore.runTransaction(async transaction => {
         const doc = await transaction.get(deckRef);
         transaction.update(deckRef, {
@@ -74,16 +83,33 @@ export class CardService extends GenericDbService {
    * Loads the "recent" cards for a given user
    * @param params general params
    */
-  public listRecent(params: { user: User }): Observable<Card[]> {
-    const { user } = params;
-    const recentCards = Object.keys(user.recentCards || {});
-    const cards$ = recentCards.map(cardId =>
-      this.db
-        .collection(Collections.Cards)
-        .doc<Card>(cardId)
-        .valueChanges()
-    );
-    return recentCards.length ? combineLatest(cards$) : of([]);
+  public listRecent(params: {
+    user: User;
+    /**
+     * The limit of cards we are to show, defaults to 5
+     */
+    limit?: number;
+  }): Observable<Card[]> {
+    const { user, limit } = params;
+    return this.db
+      .collection(Collections.Users)
+      .doc(user.uid)
+      .collection(Collections.Cards, ref => ref.limit(limit || 5))
+      .valueChanges()
+      .pipe(
+        switchMap(recentCards =>
+          recentCards.length
+            ? combineLatest(
+                Object.keys(recentCards).map(cardId =>
+                  this.db
+                    .collection(Collections.Cards)
+                    .doc<Card>(cardId)
+                    .valueChanges()
+                )
+              )
+            : of([])
+        )
+      );
   }
 
   /**

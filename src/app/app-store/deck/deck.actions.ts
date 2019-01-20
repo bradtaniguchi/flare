@@ -1,5 +1,6 @@
 import { Deck } from 'src/app/models/deck';
 import { Action } from '@ngrx/store';
+import { QueryFn } from '@angular/fire/firestore';
 
 export enum DeckActionTypes {
   Create = '[Deck] create',
@@ -22,7 +23,7 @@ export class CreateDeck implements Action {
 
 export class SearchDecks implements Action {
   readonly type = DeckActionTypes.Search;
-  constructor() {}
+  constructor(public payload?: QueryFn) {}
 }
 
 export class SearchDecksSuccess implements Action {

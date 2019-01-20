@@ -7,15 +7,28 @@ export enum AuthActionTypes {
   LoginFailed = '[Auth] LoginFailed',
 
   StateChange = '[Auth] StateChange',
-  Logout = '[Auth] Logout'
+  Logout = '[Auth] Logout',
+  LogoutSuccess = '[Auth] LogoutSuccess',
+  LogoutFailed = '[Auth] LogoutFailed',
+
+  // AuthRegistration
+  Register = '[Auth] Register',
+  RegisterSuccess = '[Auth] RegisterSuccess',
+  RegisterFailed = '[Auth] RegisterFailed'
 }
 
 export type AuthActions =
+  // login
   | AuthLogin
   | AuthLoginSuccess
   | AuthLoginFailed
   | AuthStateChange
-  | AuthLogout;
+  // Logout
+  | AuthLogout
+  // AuthRegistration
+  | AuthRegister
+  | AuthRegisterSuccess
+  | AuthRegisterFailed;
 
 // LOGIN
 export class AuthLogin implements Action {
@@ -39,4 +52,24 @@ export class AuthStateChange implements Action {
 // LOGOUT
 export class AuthLogout implements Action {
   readonly type = AuthActionTypes.Logout;
+}
+export class AuthLogoutSuccess implements Action {
+  readonly type = AuthActionTypes.LogoutSuccess;
+}
+export class AuthLogoutFailed implements Action {
+  readonly type = AuthActionTypes.LogoutFailed;
+}
+
+// Auth Registration
+export class AuthRegister implements Action {
+  readonly type = AuthActionTypes.Register;
+  constructor(public payload: firebase.User) {}
+}
+
+export class AuthRegisterSuccess implements Action {
+  readonly type = AuthActionTypes.RegisterSuccess;
+}
+
+export class AuthRegisterFailed implements Action {
+  readonly type = AuthActionTypes.RegisterFailed;
 }

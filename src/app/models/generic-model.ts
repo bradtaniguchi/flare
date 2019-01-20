@@ -1,5 +1,3 @@
-import { UserId } from './user';
-
 export class GenericModel {
   /**
    * All models have an id.
@@ -12,7 +10,7 @@ export class GenericModel {
   /**
    * The id of the user who created this model
    */
-  createdBy: UserId;
+  createdBy: string;
   /**
    * List of searchable strings
    */

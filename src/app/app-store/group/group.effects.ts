@@ -6,10 +6,12 @@ import { AppState } from '../app-state';
 import {
   GroupActionTypes,
   SearchGroupsSuccess,
-  SearchGroupsFailed
+  SearchGroupsFailed,
+  SearchGroups
 } from './group.actions';
 import { withLatestFrom, switchMap, catchError, map } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { User } from 'src/app/models/user';
 
 @Injectable()
 export class GroupEffects {
@@ -22,7 +24,9 @@ export class GroupEffects {
   public search$ = this.actions$.pipe(
     ofType(GroupActionTypes.Search),
     withLatestFrom(this.store.select(state => state.auth.user)),
-    switchMap(([action, user]) => this.group.list({ user })),
+    switchMap(([action, user]: [SearchGroups, User]) =>
+      this.group.list({ user, queryFn: action.payload })
+    ),
     map(res => new SearchGroupsSuccess(res)),
     catchError(err => {
       console.error(err);

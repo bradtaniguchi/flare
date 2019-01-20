@@ -1,14 +1,16 @@
 import { Location } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { Store, select } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { select, Store } from '@ngrx/store';
+import { Observable, of } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { AppState } from 'src/app/app-store/app-state';
 import { CreateCard } from 'src/app/app-store/card/card.actions';
+import { SearchGroups } from 'src/app/app-store/group/group.actions';
 import { Card } from 'src/app/models/card';
+import { Deck } from 'src/app/models/deck';
 import { Group } from 'src/app/models/group';
 import { CreateCardForm } from './create-card-form';
-import { SearchGroups } from 'src/app/app-store/group/group.actions';
 
 @Component({
   selector: 'app-card-create',
@@ -22,7 +24,7 @@ import { SearchGroups } from 'src/app/app-store/group/group.actions';
             [groups]="groups$ | async"
           ></app-group-list-field>
           <app-deck-list-field
-            [decks]="decks"
+            [decks]="decks$ | async"
             [disabled]="!groupHasValue(form)"
           ></app-deck-list-field>
         </section>
@@ -38,23 +40,20 @@ import { SearchGroups } from 'src/app/app-store/group/group.actions';
 })
 export class CardCreateComponent implements OnInit {
   public card: Partial<Card> = {};
-  public decks = [
-    {
-      uid: '1',
-      name: 'deck1'
-    },
-    {
-      uid: '2',
-      name: 'deck2'
-    }
-  ];
   public groups$: Observable<Group[]>;
+  public decks$: Observable<Deck[]>;
   public loading$: Observable<boolean>;
   constructor(private location: Location, private store: Store<AppState>) {}
 
   ngOnInit() {
     this.store.dispatch(new SearchGroups());
-    this.groups$ = this.store.pipe(select(state => state.groups.groups));
+    this.groups$ = this.store.pipe(
+      select(state => state.groups.groups),
+      tap(groups => console.log('GROUPS', groups))
+    );
+
+    // TODO: load from the form, the selected group
+    this.decks$ = of([]);
   }
 
   groupHasValue(form: NgForm): boolean {

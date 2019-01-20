@@ -9,7 +9,9 @@ import { Observable } from 'rxjs';
     <app-header (toggleNav)="sidenav.toggle()"></app-header>
     <app-loading-bar></app-loading-bar>
     <mat-sidenav-container class="main-view-container">
-      <mat-sidenav #sidenav> <app-side-nav></app-side-nav> </mat-sidenav>
+      <mat-sidenav #sidenav>
+        <app-side-nav (close)="sidenav.close()"></app-side-nav>
+      </mat-sidenav>
       <mat-sidenav-content>
         <router-outlet></router-outlet>
         <!--<pre>

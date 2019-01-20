@@ -31,7 +31,8 @@ export class AuthService {
     const provider = new auth.GoogleAuthProvider();
     return from(this.fireAuth.auth.signInWithRedirect(provider));
   }
-  public logout(): Promise<void> {
-    return this.fireAuth.auth.signOut();
+  public logout(): Observable<void> {
+    console.log('logout called');
+    return from(this.fireAuth.auth.signOut());
   }
 }

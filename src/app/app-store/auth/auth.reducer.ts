@@ -1,5 +1,5 @@
-import { AuthState } from './auth.state';
 import { AuthActions, AuthActionTypes } from './auth.actions';
+import { AuthState } from './auth.state';
 
 export function AuthReducer(
   state: AuthState = {},
@@ -9,6 +9,8 @@ export function AuthReducer(
     case AuthActionTypes.LoginSuccess:
     case AuthActionTypes.StateChange:
       return { user: action.payload };
+    case AuthActionTypes.RegisterSuccess:
+      return { newRegister: true };
     default:
       return state;
     case AuthActionTypes.Logout:

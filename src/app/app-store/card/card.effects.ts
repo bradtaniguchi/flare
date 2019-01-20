@@ -7,7 +7,8 @@ import {
   map,
   switchMap,
   withLatestFrom,
-  mergeMap
+  mergeMap,
+  tap
 } from 'rxjs/operators';
 import { CardService } from 'src/app/core/services/card/card.service';
 import { AppState } from '../app-state';

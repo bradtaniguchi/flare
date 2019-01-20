@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore, QueryFn } from '@angular/fire/firestore';
 import { forkJoin, Observable, of } from 'rxjs';
 import { Collections } from 'src/app/config/collections';
 import { Deck } from 'src/app/models/deck';
@@ -49,15 +49,8 @@ export class DeckService extends GenericDbService {
    * Returns a list of all the decks the user has access too
    * @param params general params
    */
-  public list(params: { user: User }): Observable<Deck[]> {
-    const { user } = params;
-    const decks = Object.keys(user.decks || {});
-    const decks$ = decks.map(deckId =>
-      this.db
-        .collection(Collections.Decks)
-        .doc<Deck>(deckId)
-        .valueChanges()
-    );
-    return decks.length ? combineLatest(decks$) : of([]);
+  public list(params: { user: User; queryFn?: QueryFn }): Observable<Deck[]> {
+    const { user, queryFn } = params;
+    return this.db.collection<Deck>(Collections.Decks, queryFn).valueChanges();
   }
 }
