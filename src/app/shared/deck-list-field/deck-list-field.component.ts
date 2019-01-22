@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ControlContainer, NgForm } from '@angular/forms';
+import { ControlContainer, NgForm, FormControl } from '@angular/forms';
 import { Deck } from 'src/app/models/deck';
 
 @Component({
@@ -7,12 +7,19 @@ import { Deck } from 'src/app/models/deck';
   template: `
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Deck</mat-label>
-      <mat-select [ngModel]="deck" matInput name="deck" [disabled]="disabled">
+      <mat-select
+        [formControl]="control"
+        required
+        matInput
+        name="deck"
+        [compareWith]="compareWith"
+      >
         <mat-option></mat-option>
         <mat-option [value]="deck" *ngFor="let deck of decks">
           {{ deck.name }}
         </mat-option>
       </mat-select>
+      <mat-hint align="end"> The deck this card will go to </mat-hint>
     </mat-form-field>
   `,
   styles: [],
@@ -22,7 +29,7 @@ import { Deck } from 'src/app/models/deck';
 export class DeckListFieldComponent implements OnInit {
   @Input() deck: Deck;
   @Input() decks: Deck[];
-  @Input() disabled: boolean;
+  @Input() control: FormControl;
   constructor() {}
 
   ngOnInit() {}

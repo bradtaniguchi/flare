@@ -1,11 +1,6 @@
-import {
-  Component,
-  OnInit,
-  ChangeDetectionStrategy,
-  Input
-} from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { ControlContainer, FormControl, NgForm } from '@angular/forms';
 import { Card } from 'src/app/models/card';
-import { ControlContainer, NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-card-back',
@@ -13,13 +8,18 @@ import { ControlContainer, NgForm } from '@angular/forms';
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Card Back</mat-label>
       <input
+        [value]="card.back || ''"
+        [formControl]="control"
+        required
         matInput
+        autocomplete="off"
         name="back"
         type="text"
         id="back"
-        required
-        [ngModel]="card.back"
       />
+      <mat-hint align="end">
+        This will be shown after "flipping" the card when studying
+      </mat-hint>
     </mat-form-field>
   `,
   styles: [],
@@ -28,6 +28,7 @@ import { ControlContainer, NgForm } from '@angular/forms';
 })
 export class CardBackComponent implements OnInit {
   @Input() card: Card;
+  @Input() control: FormControl;
   constructor() {}
 
   ngOnInit() {}

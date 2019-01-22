@@ -6,6 +6,8 @@ import { SearchRecentCards } from 'src/app/app-store/card/card.actions';
 import { SearchDecks } from 'src/app/app-store/deck/deck.actions';
 import { Card } from 'src/app/models/card';
 import { Deck } from 'src/app/models/deck';
+import { getRecentCards } from 'src/app/app-store/card/card.reducer';
+import { getRecentDecks } from 'src/app/app-store/deck/deck.reducer';
 
 @Component({
   selector: 'app-dashboard',
@@ -69,12 +71,12 @@ export class DashboardComponent implements OnInit {
     this.cardsLoading$ = this.store.pipe(
       select(state => !state.cards.recentLoaded)
     );
-    this.cards$ = this.store.pipe(select(state => state.cards.recent));
+    this.cards$ = this.store.pipe(select(getRecentCards));
 
     this.store.dispatch(new SearchDecks());
     this.decksLoading$ = this.store.pipe(
       select(state => !state.decks.decksLoaded)
     );
-    this.decks$ = this.store.pipe(select(state => state.decks.decks));
+    this.decks$ = this.store.pipe(select(getRecentDecks));
   }
 }

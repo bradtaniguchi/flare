@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material';
 import { CardCreateRoutingModule } from './card-create-routing.module';
 import { CardCreateComponent } from './card-create.component';
@@ -21,6 +21,7 @@ import { SpinnerModule } from 'src/app/shared/spinner/spinner.module';
     SpinnerModule,
     // angular
     FormsModule,
+    ReactiveFormsModule,
     // angular material
     FlexLayoutModule,
     MatButtonModule

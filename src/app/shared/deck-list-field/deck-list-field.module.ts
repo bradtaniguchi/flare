@@ -7,13 +7,15 @@ import {
   MatAutocompleteModule,
   MatSelectModule
 } from '@angular/material';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [DeckListFieldComponent],
   imports: [
     CommonModule,
+    // angular
     FormsModule,
+    ReactiveFormsModule,
     // angular material
     MatInputModule,
     MatFormFieldModule,

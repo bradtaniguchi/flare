@@ -1,4 +1,3 @@
-import { Card, CardId } from './card';
 import { GenericModel } from './generic-model';
 import { GroupId } from './group';
 

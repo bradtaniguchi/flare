@@ -1,9 +1,19 @@
 import { Location } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  OnDestroy
+} from '@angular/core';
+import { NgForm, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
-import { Observable, of } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Observable, of, Subject } from 'rxjs';
+import {
+  tap,
+  switchMap,
+  takeUntil,
+  distinctUntilChanged
+} from 'rxjs/operators';
 import { AppState } from 'src/app/app-store/app-state';
 import { CreateCard } from 'src/app/app-store/card/card.actions';
 import { SearchGroups } from 'src/app/app-store/group/group.actions';
@@ -11,21 +21,32 @@ import { Card } from 'src/app/models/card';
 import { Deck } from 'src/app/models/deck';
 import { Group } from 'src/app/models/group';
 import { CreateCardForm } from './create-card-form';
+import { SearchDecks } from 'src/app/app-store/deck/deck.actions';
+import { getDecksForGroup } from 'src/app/app-store/deck/deck.reducer';
+import { ActivatedRoute } from '@angular/router';
+import { User } from 'src/app/models/user';
 
 @Component({
   selector: 'app-card-create',
   template: `
     <div class="view-container-padding">
-      <form #form="ngForm" (submit)="submit($event, form)">
+      <form [formGroup]="form" (submit)="submit($event, form)">
         <section fxLayout="column">
-          <app-card-front [card]="card"></app-card-front>
-          <app-card-back [card]="card"></app-card-back>
+          <app-card-front
+            [card]="card"
+            [control]="form.get('front')"
+          ></app-card-front>
+          <app-card-back
+            [card]="card"
+            [control]="form.get('back')"
+          ></app-card-back>
           <app-group-list-field
             [groups]="groups$ | async"
+            [control]="form.get('group')"
           ></app-group-list-field>
           <app-deck-list-field
             [decks]="decks$ | async"
-            [disabled]="!groupHasValue(form)"
+            [control]="form.get('deck')"
           ></app-deck-list-field>
         </section>
         <section fxLayout="row" fxLayoutAlign="end">
@@ -34,35 +55,116 @@ import { CreateCardForm } from './create-card-form';
         </section>
       </form>
     </div>
+    <pre>
+      {{ form.value | json }}
+    </pre
+    >
   `,
   styles: [],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CardCreateComponent implements OnInit {
+export class CardCreateComponent implements OnInit, OnDestroy {
   public card: Partial<Card> = {};
   public groups$: Observable<Group[]>;
   public decks$: Observable<Deck[]>;
   public loading$: Observable<boolean>;
-  constructor(private location: Location, private store: Store<AppState>) {}
+  public form: FormGroup;
+
+  private user: User;
+  private takeUntil = new Subject();
+  constructor(
+    private location: Location,
+    private store: Store<AppState>,
+    private fb: FormBuilder,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit() {
-    this.store.dispatch(new SearchGroups());
-    this.groups$ = this.store.pipe(
-      select(state => state.groups.groups),
-      tap(groups => console.log('GROUPS', groups))
-    );
+    // used resolve value from resolver
+    this.user = this.route.snapshot.data.user;
 
-    // TODO: load from the form, the selected group
-    this.decks$ = of([]);
+    this.form = this.buildForm();
+    this.store.dispatch(new SearchGroups());
+    this.groups$ = this.observeGroups();
+
+    this.form
+      .get('group')
+      .valueChanges.pipe(takeUntil(this.takeUntil))
+      .subscribe((group: Group) =>
+        !!group
+          ? this.form.get('deck').enable()
+          : this.form.get('deck').disable()
+      );
+    this.decks$ = this.observeDecks();
   }
 
-  groupHasValue(form: NgForm): boolean {
-    return !!(
-      form &&
-      form.controls &&
-      form.controls.group &&
-      form.controls.group.value
+  ngOnDestroy() {
+    this.takeUntil.next();
+    this.takeUntil.unsubscribe();
+  }
+  /**
+   * Builds the main formGroup to create a card
+   */
+  private buildForm(): FormGroup {
+    return this.fb.group({
+      front: this.fb.control('', [Validators.required]),
+      back: this.fb.control('', [Validators.required]),
+      group: this.fb.control(undefined, [Validators.required]),
+      deck: this.fb.control(undefined, [Validators.required])
+    });
+  }
+
+  /**
+   * Observes the groups form the state, by default we set the
+   * group to be the same as the current user id (this is the default group)
+   */
+  private observeGroups(): Observable<Group[]> {
+    return this.store.pipe(
+      select(state => state.groups.groups),
+      tap((groups: Group[]) => this.setDefaultGroup(groups))
     );
+  }
+  /**
+   * Sets the default group, if one isn't already selected
+   * @param user the user, used to select the "default" group
+   */
+  private setDefaultGroup(groups: Group[]): void {
+    const formControl = this.form.get('group');
+    if (!formControl.value) {
+      const group = groups.find(_group => _group.uid === this.user.uid);
+      formControl.setValue(group);
+    }
+  }
+  /**
+   * Returns the observable for the decks, based upon the currently selected group
+   */
+  private observeDecks(): Observable<Deck[]> {
+    return this.form.get('group').valueChanges.pipe(
+      // this is to prevent duplicate calls for "undefined"
+      distinctUntilChanged(),
+      tap((group: Group) =>
+        this.store.dispatch(
+          new SearchDecks(
+            // if there is a group selected then "search" for groups.
+            group ? ref => ref.where('group', '==', group.uid) : undefined
+          )
+        )
+      ),
+      switchMap((group: Group) =>
+        !!group ? this.store.select(getDecksForGroup(group.uid)) : of([])
+      ),
+      tap(decks => this.setDefaultDeck(decks))
+    );
+  }
+  /**
+   * Sets the default deck, if there isn't one already selected
+   */
+  private setDefaultDeck(decks: Deck[]): void {
+    const formControl = this.form.get('deck');
+    if (!formControl.value) {
+      const deck = decks.find(_deck => _deck.uid === this.user.uid);
+      formControl.setValue(deck);
+    }
   }
 
   back() {

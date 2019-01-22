@@ -7,7 +7,7 @@ import { Deck } from 'src/app/models/deck';
 import { User } from 'src/app/models/user';
 import { GenericDbService } from '../generic-db/generic-db.service';
 import { CreateCardForm } from 'src/app/modules/card-create/create-card-form';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +27,7 @@ export class CardService extends GenericDbService {
    * @param form the raw form data to create a card from
    * @param user the user that is creating the card
    */
-  public create(form: CreateCardForm, user: User): Observable<void[]> {
+  public create(form: CreateCardForm, user: User): Observable<Card> {
     const uid = this.db.createId();
     const card: Card = {
       front: form.front,
@@ -35,38 +35,21 @@ export class CardService extends GenericDbService {
       createdBy: user.uid,
       createdOn: new Date(),
       deck: form.deck ? form.deck.uid : undefined,
-      tags: [],
       uid
     };
     super.tagModel(card, user);
     card.uid = uid;
-    const deckRef = this.db.firestore
-      .collection(Collections.Decks)
-      .doc(card.deck);
-
     return forkJoin(
-      // add the card to the user, so they have "access"
-      this.db
-        .collection(Collections.Users)
-        .doc(user.uid)
-        .collection(Collections.Cards)
-        .doc(uid)
-        .set({ uid: true }),
       // create the actual card
       this.db
         .collection(Collections.Cards)
         .doc(uid)
         .set(card),
-      // add the card to the given deck, if there is one.
-      this.db.firestore.runTransaction(async transaction => {
-        const doc = await transaction.get(deckRef);
-        transaction.update(deckRef, {
-          // update card count, add card to cards sub-collection
-          cardsCount: (doc.data() as Deck).cardsCount + 1,
-          [`cards.${uid}`]: card.uid
-        });
-      })
-    );
+      this.db
+        .collection(Collections.Decks)
+        .doc(card.deck)
+        .update({ [`decks.${uid}`]: uid })
+    ).pipe(map(() => card));
   }
 
   public update(card: Partial<Card>): Observable<any> {

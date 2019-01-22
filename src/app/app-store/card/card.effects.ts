@@ -16,7 +16,9 @@ import {
   CardActionTypes,
   SearchRecentCardsFailed,
   SearchRecentCardsSuccess,
-  CreateCard
+  CreateCard,
+  CreateCardFailed,
+  CreateCardSuccess
 } from './card.actions';
 
 @Injectable()
@@ -45,7 +47,12 @@ export class CardEffects {
   public create$ = this.actions$.pipe(
     ofType<CreateCard>(CardActionTypes.Create),
     withLatestFrom(this.store.select(state => state.auth.user)),
-    mergeMap(([action, user]) => this.card.create(action.payload, user))
+    mergeMap(([action, user]) => this.card.create(action.payload, user)),
+    map(card => new CreateCardSuccess(card)),
+    catchError(err => {
+      console.error(err);
+      return of(new CreateCardFailed());
+    })
   );
 
   @Effect()

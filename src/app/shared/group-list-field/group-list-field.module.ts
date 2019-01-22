@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GroupListFieldComponent } from './group-list-field.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   MatInputModule,
   MatFormFieldModule,
@@ -12,7 +12,9 @@ import {
   declarations: [GroupListFieldComponent],
   imports: [
     CommonModule,
+    // angular
     FormsModule,
+    ReactiveFormsModule,
     // angular material
     MatInputModule,
     MatFormFieldModule,

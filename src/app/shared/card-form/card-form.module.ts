@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CardFrontComponent } from './card-front/card-front.component';
 import { CardBackComponent } from './card-back/card-back.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule, MatFormFieldModule } from '@angular/material';
 
 @NgModule({
@@ -11,6 +11,7 @@ import { MatInputModule, MatFormFieldModule } from '@angular/material';
     CommonModule,
     // angular
     FormsModule,
+    ReactiveFormsModule,
     // angular material
     MatInputModule,
     MatFormFieldModule
