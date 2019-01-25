@@ -1,13 +1,14 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { DashboardComponent } from './dashboard.component';
+import { DeckCreateComponent } from './deck-create.component';
 import { UserResolver } from 'src/app/core/resolvers/user.resolver';
 
 const routes: Routes = [
   {
     path: '',
-    component: DashboardComponent,
+    component: DeckCreateComponent,
     resolve: {
+      // this is so we can set the "default" group and deck initially
       user: UserResolver
     }
   }
@@ -17,4 +18,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class DashboardRoutingModule {}
+export class DeckCreateRoutingModule {}

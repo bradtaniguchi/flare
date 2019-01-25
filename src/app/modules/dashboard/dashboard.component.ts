@@ -7,7 +7,9 @@ import { SearchDecks } from 'src/app/app-store/deck/deck.actions';
 import { Card } from 'src/app/models/card';
 import { Deck } from 'src/app/models/deck';
 import { getRecentCards } from 'src/app/app-store/card/card.reducer';
-import { getRecentDecks } from 'src/app/app-store/deck/deck.reducer';
+import { getDecks, getUserDecks } from 'src/app/app-store/deck/deck.reducer';
+import { ActivatedRoute } from '@angular/router';
+import { User } from 'src/app/models/user';
 
 @Component({
   selector: 'app-dashboard',
@@ -20,9 +22,27 @@ import { getRecentDecks } from 'src/app/app-store/deck/deck.reducer';
       <!-- first column-->
       <section fxFlex="50" class="margin">
         <div>
-          <!-- list of decks "last uses" -->
+          <!-- list of all decks -->
           <app-spinner-container [loading]="decksLoading$">
-            <mat-card *ngIf="(decks$ | async) as decks">
+            <mat-card
+              *ngIf="(decks$ | async) as decks"
+              class="margin-top-bottom"
+            >
+              <ng-container *ngIf="!decks.length">
+                <p>No Decks, please create one by clicking on the right</p>
+              </ng-container>
+              <app-dashboard-deck *ngFor="let deck of decks" [deck]="deck">
+              </app-dashboard-deck>
+            </mat-card>
+          </app-spinner-container>
+        </div>
+        <div>
+          <!-- list of decks the user created -->
+          <app-spinner-container [loading]="decksLoading$">
+            <mat-card
+              *ngIf="(userDecks$ | async) as decks"
+              class="margin-top-bottom"
+            >
               <ng-container *ngIf="!decks.length">
                 <p>No Decks, please create one by clicking on the right</p>
               </ng-container>
@@ -61,22 +81,35 @@ import { getRecentDecks } from 'src/app/app-store/deck/deck.reducer';
 })
 export class DashboardComponent implements OnInit {
   public decks$: Observable<Deck[]>;
+  public userDecks$: Observable<Deck[]>;
   public cards$: Observable<Card[]>;
   public decksLoading$: Observable<boolean>;
   public cardsLoading$: Observable<boolean>;
-  constructor(private store: Store<AppState>) {}
+
+  private user: User;
+  constructor(private store: Store<AppState>, private route: ActivatedRoute) {}
 
   ngOnInit() {
+    // used resolve value from resolver
+    this.user = this.route.snapshot.data.user;
+
     this.store.dispatch(new SearchRecentCards());
     this.cardsLoading$ = this.store.pipe(
       select(state => !state.cards.recentLoaded)
     );
     this.cards$ = this.store.pipe(select(getRecentCards));
 
-    this.store.dispatch(new SearchDecks());
+    // find all decks for the current user
+    this.store.dispatch(
+      new SearchDecks(ref => ref.where('createdBy', '==', this.user.uid))
+    );
+
     this.decksLoading$ = this.store.pipe(
       select(state => !state.decks.decksLoaded)
     );
-    this.decks$ = this.store.pipe(select(getRecentDecks));
+    // any and all decks, will be "recent"
+    this.decks$ = this.store.pipe(select(getDecks));
+
+    this.userDecks$ = this.store.pipe(select(getUserDecks(this.user)));
   }
 }

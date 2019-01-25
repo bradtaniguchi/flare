@@ -6,12 +6,22 @@ import {
   DeckActionTypes,
   SearchDecksFailed,
   SearchDecksSuccess,
-  SearchDecks
+  SearchDecks,
+  CreateDeck,
+  CreateDeckSuccess,
+  CreateDeckFailed
 } from './deck.actions';
-import { withLatestFrom, switchMap, catchError, map } from 'rxjs/operators';
+import {
+  withLatestFrom,
+  switchMap,
+  catchError,
+  map,
+  mergeMap
+} from 'rxjs/operators';
 import { DeckService } from 'src/app/core/services/deck/deck.service';
 import { of } from 'rxjs';
 import { User } from 'src/app/models/user';
+import { Notify } from '../notify/notify.actions';
 
 @Injectable()
 export class DeckEffects {
@@ -20,6 +30,23 @@ export class DeckEffects {
     private actions$: Actions,
     private deck: DeckService
   ) {}
+
+  @Effect()
+  public create$ = this.actions$.pipe(
+    ofType<CreateDeck>(DeckActionTypes.Create),
+    withLatestFrom(this.store.select(state => state.auth.user)),
+    mergeMap(([action, user]) => this.deck.create(action.payload, user)),
+    switchMap(deck => [
+      new CreateDeckSuccess(deck),
+      new Notify({
+        message: 'Successfully Created Deck'
+      })
+    ]),
+    catchError(err => {
+      console.error(err);
+      return of(new CreateDeckFailed());
+    })
+  );
 
   @Effect()
   public search$ = this.actions$.pipe(

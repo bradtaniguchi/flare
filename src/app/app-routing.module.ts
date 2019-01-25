@@ -17,20 +17,23 @@ const routes: Routes = [
       {
         path: 'cards',
         loadChildren: './modules/card-list/card-list.module#CardListModule',
-        // canLoad: [AuthGuard],
         pathMatch: 'full'
       },
       {
         path: 'cards/create',
         loadChildren:
           './modules/card-create/card-create.module#CardCreateModule',
-        // canLoad: [AuthGuard],
+        pathMatch: 'full'
+      },
+      {
+        path: 'decks/create',
+        loadChildren:
+          './modules/deck-create/deck-create.module#DeckCreateModule',
         pathMatch: 'full'
       },
       {
         path: 'dashboard',
         loadChildren: './modules/dashboard/dashboard.module#DashboardModule',
-        // canLoad: [AuthGuard],
         pathMatch: 'full'
       },
       {

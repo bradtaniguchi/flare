@@ -9,7 +9,9 @@ import { Deck } from 'src/app/models/deck';
 @Component({
   selector: 'app-dashboard-deck',
   template: `
-    <pre>{{ deck | json }}</pre>
+    <p>name: {{ deck.name }}</p>
+    <p>description: {{ deck.name }}</p>
+    <p># of cards: {{ tempCardCount() }}</p>
   `,
   styles: [],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -19,4 +21,8 @@ export class DashboardDeckComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {}
+
+  tempCardCount(): number {
+    return Object.keys(this.deck.cards || {}).length;
+  }
 }

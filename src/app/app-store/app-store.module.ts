@@ -14,6 +14,7 @@ import { DeckReducer } from './deck/deck.reducer';
 import { GroupReducer } from './group/group.reducer';
 import { DeckEffects } from './deck/deck.effects';
 import { GroupEffects } from './group/group.effects';
+import { NotifyEffects } from './notify/notify.effects';
 
 @NgModule({
   declarations: [],
@@ -22,7 +23,8 @@ import { GroupEffects } from './group/group.effects';
       AuthEffects,
       CardEffects,
       DeckEffects,
-      GroupEffects
+      GroupEffects,
+      NotifyEffects
     ]),
     StoreModule.forRoot<AppState>({
       auth: AuthReducer,

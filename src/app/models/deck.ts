@@ -5,6 +5,7 @@ export type DeckId = string;
 
 export class Deck extends GenericModel {
   uid: DeckId;
+
   /**
    * Name of the deck
    */
@@ -19,6 +20,11 @@ export class Deck extends GenericModel {
    * Card counts
    */
   cardsCount?: number;
+
+  /**
+   * A map of all the cards within this deck
+   */
+  cards?: { [key: string]: string };
 
   /**
    * The group this deck belongs too

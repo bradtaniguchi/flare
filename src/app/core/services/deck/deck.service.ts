@@ -5,12 +5,16 @@ import { Collections } from 'src/app/config/collections';
 import { Deck } from 'src/app/models/deck';
 import { User } from 'src/app/models/user';
 import { GenericDbService } from '../generic-db/generic-db.service';
+import { CreateDeckForm } from 'src/app/modules/deck-create/create-deck-form';
+import { map } from 'rxjs/operators';
+import { CardService } from '../card/card.service';
+import { CreateCardForm } from 'src/app/modules/card-create/create-card-form';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DeckService extends GenericDbService {
-  constructor(private db: AngularFirestore) {
+  constructor(private db: AngularFirestore, private card: CardService) {
     super();
   }
 
@@ -19,10 +23,19 @@ export class DeckService extends GenericDbService {
    * @param deck the deck to create
    * @param user the user who is to creating the deck
    */
-  public create(deck: Deck, user: User): Observable<any> {
+  public create(form: CreateDeckForm, user: User): Observable<Deck> {
     const uid = this.db.createId();
-    super.tagModel(deck, user);
-    deck.uid = uid;
+    const deck: Deck = {
+      name: form.name,
+      description: form.description,
+      createdBy: user.uid,
+      createdOn: new Date(),
+      group: form.group.uid,
+      uid
+    };
+    const cardForms = form.cards.map(
+      cardForm => ({ ...cardForm, deck } as CreateCardForm)
+    );
     return forkJoin(
       this.db
         .collection(Collections.Decks)
@@ -31,8 +44,9 @@ export class DeckService extends GenericDbService {
       this.db
         .collection(Collections.Groups)
         .doc(deck.group)
-        .update({ [`decks.${uid}`]: uid })
-    );
+        .update({ [`decks.${uid}`]: uid }),
+      this.card.createBulk(cardForms, user)
+    ).pipe(map(() => deck));
   }
 
   /**

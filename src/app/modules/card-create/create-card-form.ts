@@ -1,6 +1,6 @@
 import { Deck } from 'src/app/models/deck';
 
-export class CreateCardForm {
+export interface CreateCardForm {
   front: string;
   back: string;
   deck: Deck;

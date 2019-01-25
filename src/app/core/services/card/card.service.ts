@@ -17,6 +17,16 @@ export class CardService extends GenericDbService {
     super();
   }
 
+  private createCardFromForm(form: CreateCardForm, user: User): Card {
+    return {
+      front: form.front,
+      back: form.back,
+      createdBy: user.uid,
+      createdOn: new Date(),
+      deck: form.deck ? form.deck.uid : undefined,
+      uid: this.db.createId()
+    };
+  }
   /**
    * Creates a card.
    *
@@ -28,17 +38,9 @@ export class CardService extends GenericDbService {
    * @param user the user that is creating the card
    */
   public create(form: CreateCardForm, user: User): Observable<Card> {
-    const uid = this.db.createId();
-    const card: Card = {
-      front: form.front,
-      back: form.back,
-      createdBy: user.uid,
-      createdOn: new Date(),
-      deck: form.deck ? form.deck.uid : undefined,
-      uid
-    };
-    super.tagModel(card, user);
-    card.uid = uid;
+    // const uid = this.db.createId();
+    const card: Card = this.createCardFromForm(form, user);
+    const uid = card.uid;
     return forkJoin(
       // create the actual card
       this.db
@@ -48,8 +50,28 @@ export class CardService extends GenericDbService {
       this.db
         .collection(Collections.Decks)
         .doc(card.deck)
-        .update({ [`decks.${uid}`]: uid })
+        .update({ [`cards.${uid}`]: uid })
     ).pipe(map(() => card));
+  }
+
+  public createBulk(forms: CreateCardForm[], user: User): Observable<Card[]> {
+    const { batch, cards } = forms.reduce(
+      (acc, form) => {
+        const { batch, cards } = acc;
+        const card = this.createCardFromForm(form, user);
+        const uid = card.uid;
+        const ref = this.db.firestore.collection(Collections.Cards).doc(uid);
+
+        batch.set(ref, card);
+        cards.push(card);
+        return acc;
+      },
+      {
+        batch: this.db.firestore.batch(),
+        cards: [] as Card[]
+      }
+    );
+    return from(batch.commit()).pipe(map(() => cards));
   }
 
   public update(card: Partial<Card>): Observable<any> {
