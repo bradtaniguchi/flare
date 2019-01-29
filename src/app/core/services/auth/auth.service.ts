@@ -5,6 +5,7 @@ import { auth } from 'firebase/auth';
 import { from, Observable } from 'rxjs';
 import { AppState } from 'src/app/app-store/app-state';
 import { AuthStateChange } from 'src/app/app-store/auth/auth.actions';
+import { logger } from '../../logger';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +33,7 @@ export class AuthService {
     return from(this.fireAuth.auth.signInWithRedirect(provider));
   }
   public logout(): Observable<void> {
-    console.log('logout called');
+    logger.log('logout called');
     return from(this.fireAuth.auth.signOut());
   }
 }

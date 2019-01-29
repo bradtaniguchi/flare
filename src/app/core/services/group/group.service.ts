@@ -54,9 +54,7 @@ export class GroupService {
         switchMap(groupsCollection =>
           combineLatest(
             // always return the user's current default group
-            this.getGroupById(user.uid).pipe(
-              tap(group => console.log('test with getGroupById', group))
-            ),
+            this.getGroupById(user.uid),
             // also, return all the groups the user has access to
             ...Object.keys(groupsCollection).map(groupId =>
               this.getGroupById(groupId, queryFn)

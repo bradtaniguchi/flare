@@ -4,6 +4,7 @@ import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { AppState } from 'src/app/app-store/app-state';
 import { tap, take } from 'rxjs/operators';
+import { logger } from '../../logger';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +28,7 @@ export class LoginGuard implements CanActivate {
       select(_state => !_state.auth.user),
       tap(noAuth => {
         if (noAuth) {
-          console.log('user does not have auth, let them thru');
+          logger.log('user does not have auth, let them thru');
         }
       }),
       take(1)

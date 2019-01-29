@@ -10,6 +10,7 @@ import {
 import { switchMap, catchError, map } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { User } from 'src/app/models/user';
+import { logger } from 'src/app/core/logger';
 
 @Injectable()
 export class UserEffects {
@@ -21,7 +22,7 @@ export class UserEffects {
     switchMap((action: SearchUsers) => this.user.startSearch(action.payload)),
     map((res: User[]) => new SearchUsersSuccess(res)),
     catchError(err => {
-      console.error(err);
+      logger.error(err);
       return of(new SearchUserFailed());
     })
   );

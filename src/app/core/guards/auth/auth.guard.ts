@@ -12,6 +12,7 @@ import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { take, tap } from 'rxjs/operators';
 import { AppState } from 'src/app/app-store/app-state';
+import { logger } from '../../logger';
 
 @Injectable({
   providedIn: 'root'
@@ -37,11 +38,11 @@ export class AuthGuard implements CanActivate, CanLoad {
       select(state => !!state.auth.user),
       tap(isAuthenticated => {
         if (!isAuthenticated) {
-          console.log('NOT AUTHENTICATED');
+          logger.log('NOT AUTHENTICATED');
           this.router.navigate(['/login']);
           return;
         }
-        console.log('AUTHENTICATED');
+        logger.log('AUTHENTICATED');
       }),
       take(1)
     );

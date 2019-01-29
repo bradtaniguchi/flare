@@ -15,6 +15,7 @@ import {
 import { withLatestFrom, switchMap, catchError, map } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { User } from 'src/app/models/user';
+import { logger } from 'src/app/core/logger';
 
 @Injectable()
 export class GroupEffects {
@@ -33,7 +34,7 @@ export class GroupEffects {
     ),
     map(res => new CreateGroupSuccess(res as any)),
     catchError(err => {
-      console.error(err);
+      logger.error(err);
       return of(new CreateGroupFailed());
     })
   );
@@ -47,7 +48,7 @@ export class GroupEffects {
     ),
     map(res => new SearchGroupsSuccess(res)),
     catchError(err => {
-      console.error(err);
+      logger.error(err);
       return of(new SearchGroupsFailed());
     })
   );

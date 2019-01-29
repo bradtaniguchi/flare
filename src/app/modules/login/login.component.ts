@@ -28,9 +28,7 @@ import { Router } from '@angular/router';
 export class LoginComponent implements OnInit {
   constructor(private store: Store<AppState>, private router: Router) {}
 
-  ngOnInit() {
-    console.log('in login page');
-  }
+  ngOnInit() {}
 
   login() {
     this.store.dispatch(new AuthLogin('popup'));

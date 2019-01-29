@@ -11,6 +11,7 @@ import { Group } from 'src/app/models/group';
 import { User } from 'src/app/models/user';
 import { CreateDeck } from 'src/app/app-store/deck/deck.actions';
 import { CreateDeckForm } from './create-deck-form';
+import { logger } from 'src/app/core/logger';
 
 @Component({
   selector: 'app-deck-create',
@@ -161,7 +162,7 @@ export class DeckCreateComponent implements OnInit {
 
   submit(event: Event, form: FormGroup) {
     if (form.valid) {
-      console.log('test with form:', form);
+      logger.log('test with form:', form);
       this.store.dispatch(new CreateDeck(form.value as CreateDeckForm));
       this.router.navigate(['/']);
     }

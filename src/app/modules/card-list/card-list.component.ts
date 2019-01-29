@@ -3,6 +3,7 @@ import { AppState } from 'src/app/app-store/app-state';
 import { Store, select } from '@ngrx/store';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
+import { logger } from 'src/app/core/logger';
 
 @Component({
   selector: 'app-card-list',
@@ -20,8 +21,7 @@ export class CardListComponent implements OnInit {
   constructor(private store: Store<AppState>, private route: ActivatedRoute) {}
 
   ngOnInit() {
-    this.route.params.subscribe(test => console.log('test', test));
     this.loaded$ = this.store.pipe(select(state => state.loading));
-    console.log('test with route', this.route);
+    logger.log('test with route', this.route);
   }
 }

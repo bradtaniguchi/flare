@@ -14,6 +14,7 @@ import {
   AuthLogoutSuccess
 } from './auth.actions';
 import { UserService } from 'src/app/core/services/user/user.service';
+import { logger } from 'src/app/core/logger';
 
 @Injectable()
 export class AuthEffects {
@@ -36,7 +37,7 @@ export class AuthEffects {
       new AuthLoginSuccess(userCredentials.user)
     ]),
     catchError(err => {
-      console.error(err);
+      logger.error(err);
       return of(new AuthLoginFailed(err));
     })
   );
@@ -50,7 +51,7 @@ export class AuthEffects {
     mergeMap((action: AuthRegister) => this.user.create(action.payload)),
     map(() => new AuthRegisterSuccess()),
     catchError(err => {
-      console.error(err);
+      logger.error(err);
       return of(new AuthRegisterFailed());
     })
   );
@@ -61,7 +62,7 @@ export class AuthEffects {
     mergeMap(() => this.auth.logout()),
     map(() => new AuthLogoutSuccess()),
     catchError(err => {
-      console.error(err);
+      logger.error(err);
       return of(new AuthLogoutFailed());
     })
   );

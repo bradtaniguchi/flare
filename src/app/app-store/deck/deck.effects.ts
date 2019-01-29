@@ -22,6 +22,7 @@ import { DeckService } from 'src/app/core/services/deck/deck.service';
 import { of } from 'rxjs';
 import { User } from 'src/app/models/user';
 import { Notify } from '../notify/notify.actions';
+import { logger } from 'src/app/core/logger';
 
 @Injectable()
 export class DeckEffects {
@@ -43,7 +44,7 @@ export class DeckEffects {
       })
     ]),
     catchError(err => {
-      console.error(err);
+      logger.error(err);
       return of(new CreateDeckFailed());
     })
   );
@@ -57,7 +58,7 @@ export class DeckEffects {
     ),
     map(res => new SearchDecksSuccess(res)),
     catchError(err => {
-      console.error(err);
+      logger.error(err);
       return of(new SearchDecksFailed());
     })
   );

@@ -25,6 +25,7 @@ import { Deck } from 'src/app/models/deck';
 import { Group } from 'src/app/models/group';
 import { User } from 'src/app/models/user';
 import { CreateCardForm } from './create-card-form';
+import { logger } from 'src/app/core/logger';
 
 @Component({
   selector: 'app-card-create',
@@ -169,7 +170,7 @@ export class CardCreateComponent implements OnInit, OnDestroy {
 
   submit(event: Event, form: FormGroup) {
     if (form.valid) {
-      console.log('event:', event, 'form:', form);
+      logger.log('event:', event, 'form:', form);
       this.store.dispatch(new CreateCard(form.value as CreateCardForm));
     }
   }

@@ -20,6 +20,7 @@ import {
   CreateCardFailed,
   CreateCardSuccess
 } from './card.actions';
+import { logger } from 'src/app/core/logger';
 
 @Injectable()
 export class CardEffects {
@@ -35,7 +36,7 @@ export class CardEffects {
     mergeMap(([action, user]) => this.card.create(action.payload, user)),
     map(card => new CreateCardSuccess(card)),
     catchError(err => {
-      console.error(err);
+      logger.error(err);
       return of(new CreateCardFailed());
     })
   );
@@ -45,10 +46,9 @@ export class CardEffects {
     ofType(CardActionTypes.SearchRecent),
     withLatestFrom(this.store.select(state => state.auth.user)),
     switchMap(([_, user]) => this.card.listRecent({ user })),
-    tap(val => console.log('test with recent', val)),
     map(res => new SearchRecentCardsSuccess(res)),
     catchError(err => {
-      console.error(err);
+      logger.error(err);
       return of(new SearchRecentCardsFailed());
     })
   );
