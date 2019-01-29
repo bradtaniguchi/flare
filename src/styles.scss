@@ -33,3 +33,14 @@ mat-sidenav {
   width: 15%;
   min-width: 15%;
 }
+
+/*change later, hard to tell*/
+.active-link {
+  opacity: 0.8;
+}
+
+/*bottom of side-nav*/
+.bottom {
+  position: absolute;
+  bottom: 0;
+}

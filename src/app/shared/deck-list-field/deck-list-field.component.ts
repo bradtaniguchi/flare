@@ -8,13 +8,13 @@ import { Deck } from 'src/app/models/deck';
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Deck</mat-label>
       <mat-select
+        [value]="deck"
         [formControl]="control"
         required
         matInput
         name="deck"
         [compareWith]="compareWith"
       >
-        <mat-option></mat-option>
         <mat-option [value]="deck" *ngFor="let deck of decks">
           {{ deck.name }}
         </mat-option>

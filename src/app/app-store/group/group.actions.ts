@@ -1,9 +1,12 @@
 import { Action } from '@ngrx/store';
 import { Group } from 'src/app/models/group';
 import { QueryFn } from '@angular/fire/firestore';
+import { CreateGroupForm } from 'src/app/modules/group-create/create-group-form';
 
 export enum GroupActionTypes {
   Create = '[Group] create',
+  CreateSuccess = '[Group] createSuccess',
+  CreateFailed = '[Group] createFailed',
   Search = '[Group] search',
   SearchSuccess = '[Group] searchSuccess',
   SearchFailed = '[Group] searchFailed',
@@ -11,13 +14,22 @@ export enum GroupActionTypes {
 }
 export type GroupActions =
   | CreateGroup
+  | CreateGroupSuccess
+  | CreateGroupFailed
   | SearchGroups
   | SearchGroupsSuccess
   | SearchGroupsFailed;
 
 export class CreateGroup implements Action {
   readonly type = GroupActionTypes.Create;
+  constructor(public payload: CreateGroupForm) {}
+}
+export class CreateGroupSuccess implements Action {
+  readonly type = GroupActionTypes.CreateSuccess;
   constructor(public payload: Group) {}
+}
+export class CreateGroupFailed implements Action {
+  readonly type = GroupActionTypes.CreateFailed;
 }
 
 export class SearchGroups implements Action {

@@ -15,6 +15,8 @@ import { GroupReducer } from './group/group.reducer';
 import { DeckEffects } from './deck/deck.effects';
 import { GroupEffects } from './group/group.effects';
 import { NotifyEffects } from './notify/notify.effects';
+import { UserReducer } from './user/user.reducer';
+import { UserEffects } from './user/user.effects';
 
 @NgModule({
   declarations: [],
@@ -24,7 +26,8 @@ import { NotifyEffects } from './notify/notify.effects';
       CardEffects,
       DeckEffects,
       GroupEffects,
-      NotifyEffects
+      NotifyEffects,
+      UserEffects
     ]),
     StoreModule.forRoot<AppState>({
       auth: AuthReducer,
@@ -32,7 +35,8 @@ import { NotifyEffects } from './notify/notify.effects';
       sync: SyncReducer,
       cards: CardReducer,
       decks: DeckReducer,
-      groups: GroupReducer
+      groups: GroupReducer,
+      users: UserReducer
     }),
     environment.production ? [] : StoreDevtoolsModule.instrument()
   ]

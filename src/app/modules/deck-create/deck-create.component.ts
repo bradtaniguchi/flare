@@ -162,7 +162,6 @@ export class DeckCreateComponent implements OnInit {
   submit(event: Event, form: FormGroup) {
     if (form.valid) {
       console.log('test with form:', form);
-      // TODO: dispatch deck creation to state here
       this.store.dispatch(new CreateDeck(form.value as CreateDeckForm));
       this.router.navigate(['/']);
     }

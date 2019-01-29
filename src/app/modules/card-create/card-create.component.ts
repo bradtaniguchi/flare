@@ -2,29 +2,29 @@ import { Location } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  OnInit,
-  OnDestroy
+  OnDestroy,
+  OnInit
 } from '@angular/core';
-import { NgForm, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable, of, Subject } from 'rxjs';
 import {
-  tap,
+  distinctUntilChanged,
   switchMap,
   takeUntil,
-  distinctUntilChanged
+  tap
 } from 'rxjs/operators';
 import { AppState } from 'src/app/app-store/app-state';
 import { CreateCard } from 'src/app/app-store/card/card.actions';
+import { SearchDecks } from 'src/app/app-store/deck/deck.actions';
+import { getDecksForGroup } from 'src/app/app-store/deck/deck.reducer';
 import { SearchGroups } from 'src/app/app-store/group/group.actions';
 import { Card } from 'src/app/models/card';
 import { Deck } from 'src/app/models/deck';
 import { Group } from 'src/app/models/group';
-import { CreateCardForm } from './create-card-form';
-import { SearchDecks } from 'src/app/app-store/deck/deck.actions';
-import { getDecksForGroup } from 'src/app/app-store/deck/deck.reducer';
-import { ActivatedRoute } from '@angular/router';
 import { User } from 'src/app/models/user';
+import { CreateCardForm } from './create-card-form';
 
 @Component({
   selector: 'app-card-create',
@@ -55,10 +55,6 @@ import { User } from 'src/app/models/user';
         </section>
       </form>
     </div>
-    <pre>
-      {{ form.value | json }}
-    </pre
-    >
   `,
   styles: [],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -171,7 +167,7 @@ export class CardCreateComponent implements OnInit, OnDestroy {
     this.location.back();
   }
 
-  submit(event: Event, form: NgForm) {
+  submit(event: Event, form: FormGroup) {
     if (form.valid) {
       console.log('event:', event, 'form:', form);
       this.store.dispatch(new CreateCard(form.value as CreateCardForm));

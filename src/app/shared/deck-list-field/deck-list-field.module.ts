@@ -1,13 +1,12 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DeckListFieldComponent } from './deck-list-field.component';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
-  MatInputModule,
   MatFormFieldModule,
-  MatAutocompleteModule,
+  MatInputModule,
   MatSelectModule
 } from '@angular/material';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DeckListFieldComponent } from './deck-list-field.component';
 
 @NgModule({
   declarations: [DeckListFieldComponent],

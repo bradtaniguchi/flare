@@ -32,6 +32,12 @@ const routes: Routes = [
         pathMatch: 'full'
       },
       {
+        path: 'groups/create',
+        loadChildren:
+          './modules/group-create/group-create.module#GroupCreateModule',
+        pathMatch: 'full'
+      },
+      {
         path: 'dashboard',
         loadChildren: './modules/dashboard/dashboard.module#DashboardModule',
         pathMatch: 'full'

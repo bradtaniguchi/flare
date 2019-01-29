@@ -1,11 +1,6 @@
-import {
-  Component,
-  OnInit,
-  ChangeDetectionStrategy,
-  Input
-} from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { ControlContainer, FormControl, NgForm } from '@angular/forms';
 import { Deck } from 'src/app/models/deck';
-import { FormControl, ControlContainer, NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-deck-name',

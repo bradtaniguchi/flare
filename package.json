@@ -13,6 +13,7 @@
     "e2e": "ng e2e",
     "precommit": "pretty-quick --staged",
     "config": "ts-node scripts/set-env.ts",
+    "bundle-report": "webpack-bundle-analyzer dist/flare/stats.json",
     "clean": "npx rimraf src/app/config.ts"
   },
   "private": true,
@@ -64,6 +65,7 @@
     "rimraf": "^2.6.3",
     "ts-node": "^7.0.1",
     "tslint": "~5.12.0",
-    "typescript": "~3.2.2"
+    "typescript": "~3.2.2",
+    "webpack-bundle-analyzer": "^3.0.3"
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { combineLatest, from, Observable } from 'rxjs';
-import { map, mergeMap } from 'rxjs/operators';
+import { map, mergeMap, tap } from 'rxjs/operators';
 import { Collections } from 'src/app/config/collections';
 import { Deck } from 'src/app/models/deck';
 import { Group } from 'src/app/models/group';
@@ -35,6 +35,17 @@ export class UserService extends GenericDbService {
   }
 
   /**
+   * Creates a basic search,
+   * @param userName the name to start checking with
+   */
+  public startSearch(userName: string): Observable<User[]> {
+    return this.db
+      .collection<User>(Collections.Users, ref =>
+        ref.where('_displayName', '>', userName).limit(5)
+      )
+      .valueChanges();
+  }
+  /**
    * Updates a returning user
    * @param user the user that is a returning user
    */
@@ -46,6 +57,7 @@ export class UserService extends GenericDbService {
         .set({
           uid: user.uid,
           displayName: user.displayName,
+          _displayName: user.displayName.toLowerCase(),
           email: user.email,
           photoURL: user.photoURL,
           lastLoggedInOn: new Date()
@@ -65,6 +77,7 @@ export class UserService extends GenericDbService {
         .set({
           uid: user.uid,
           displayName: user.displayName,
+          _displayName: user.displayName.toLowerCase(),
           email: user.email,
           photoURL: user.photoURL,
           createdOn: new Date()

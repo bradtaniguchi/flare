@@ -1,17 +1,41 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, QueryFn } from '@angular/fire/firestore';
-import { Observable, combineLatest } from 'rxjs';
+import { Observable, combineLatest, forkJoin } from 'rxjs';
 import { Group } from 'src/app/models/group';
 import { User } from 'src/app/models/user';
 import { Collections } from 'src/app/config/collections';
-import { switchMap, tap } from 'rxjs/operators';
+import { switchMap, tap, map } from 'rxjs/operators';
 import { UserGroupsCollection } from 'src/app/models/user-groups-collection';
+import { CreateGroupForm } from 'src/app/modules/group-create/create-group-form';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GroupService {
   constructor(private db: AngularFirestore) {}
+
+  /**
+   * Creates a new group, and adds a reference to the current user
+   * @param form the from to create a group from
+   * @param user the user who is creating the deck
+   */
+  public create(form: CreateGroupForm, user: User) {
+    const uid = this.db.createId();
+    const group: Group = {
+      name: form.name,
+      description: form.description,
+      createdBy: user.uid,
+      private: true,
+      createdOn: new Date(),
+      uid
+    };
+    return forkJoin(
+      this.db
+        .collection(Collections.Groups)
+        .doc(uid)
+        .set(group)
+    ).pipe(map(() => group));
+  }
 
   /**
    * Returns all the groups the user has access too, according to their

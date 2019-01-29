@@ -2,7 +2,7 @@ import { GenericModel } from './generic-model';
 
 export type GroupId = string;
 
-export class Group extends GenericModel {
+export interface Group extends GenericModel {
   uid: GroupId;
   /**
    * Name displayed for the group

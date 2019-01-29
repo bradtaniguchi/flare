@@ -7,7 +7,10 @@ import {
   GroupActionTypes,
   SearchGroupsSuccess,
   SearchGroupsFailed,
-  SearchGroups
+  SearchGroups,
+  CreateGroup,
+  CreateGroupSuccess,
+  CreateGroupFailed
 } from './group.actions';
 import { withLatestFrom, switchMap, catchError, map } from 'rxjs/operators';
 import { of } from 'rxjs';
@@ -20,6 +23,21 @@ export class GroupEffects {
     private actions$: Actions,
     private group: GroupService
   ) {}
+
+  @Effect()
+  public create$ = this.actions$.pipe(
+    ofType(GroupActionTypes.Create),
+    withLatestFrom(this.store.select(state => state.auth.user)),
+    switchMap(([action, user]: [CreateGroup, User]) =>
+      this.group.create(action.payload, user)
+    ),
+    map(res => new CreateGroupSuccess(res as any)),
+    catchError(err => {
+      console.error(err);
+      return of(new CreateGroupFailed());
+    })
+  );
+
   @Effect()
   public search$ = this.actions$.pipe(
     ofType(GroupActionTypes.Search),
