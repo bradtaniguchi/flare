@@ -1,16 +1,16 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DashboardDeckComponent } from './dashboard-deck.component';
+import { DashboardGroupComponent } from './dashboard-group.component';
 import { MatCardModule, MatButtonModule } from '@angular/material';
 
 @NgModule({
-  declarations: [DashboardDeckComponent],
+  declarations: [DashboardGroupComponent],
   imports: [
     CommonModule,
     // angular material
     MatCardModule,
     MatButtonModule
   ],
-  exports: [DashboardDeckComponent]
+  exports: [DashboardGroupComponent]
 })
-export class DashboardDeckModule {}
+export class DashboardGroupModule {}

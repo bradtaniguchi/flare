@@ -3,7 +3,7 @@ import { GroupId } from './group';
 
 export type DeckId = string;
 
-export class Deck extends GenericModel {
+export interface Deck extends GenericModel {
   uid: DeckId;
 
   /**

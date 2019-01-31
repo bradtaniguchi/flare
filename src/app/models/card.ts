@@ -3,7 +3,7 @@ import { GenericModel } from './generic-model';
 
 export type CardId = string;
 
-export class Card extends GenericModel {
+export interface Card extends GenericModel {
   uid: CardId;
 
   /**

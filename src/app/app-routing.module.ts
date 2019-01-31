@@ -15,14 +15,14 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       {
-        path: 'cards',
-        loadChildren: './modules/card-list/card-list.module#CardListModule',
-        pathMatch: 'full'
-      },
-      {
         path: 'cards/create',
         loadChildren:
           './modules/card-create/card-create.module#CardCreateModule',
+        pathMatch: 'full'
+      },
+      {
+        path: 'cards',
+        loadChildren: './modules/card-list/card-list.module#CardListModule',
         pathMatch: 'full'
       },
       {
@@ -35,6 +35,11 @@ const routes: Routes = [
         path: 'groups/create',
         loadChildren:
           './modules/group-create/group-create.module#GroupCreateModule',
+        pathMatch: 'full'
+      },
+      {
+        path: 'groups',
+        loadChildren: './modules/group-list/group-list.module#GroupListModule',
         pathMatch: 'full'
       },
       {

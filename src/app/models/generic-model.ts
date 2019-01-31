@@ -1,4 +1,4 @@
-export class GenericModel {
+export interface GenericModel {
   /**
    * All models have an id.
    */

@@ -9,6 +9,8 @@ import { DashboardActionsModule } from './dashboard-actions/dashboard-actions.mo
 import { MatCardModule } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { SpinnerModule } from 'src/app/shared/spinner/spinner.module';
+import { DashboardGroupModule } from './dashboard-group/dashboard-group.module';
+import { FormSectionHeaderModule } from 'src/app/shared/form-section-header/form-section-header.module';
 
 @NgModule({
   declarations: [DashboardComponent],
@@ -19,9 +21,10 @@ import { SpinnerModule } from 'src/app/shared/spinner/spinner.module';
     DashboardDeckModule,
     DashboardCardModule,
     DashboardActionsModule,
+    DashboardGroupModule,
     // app modules
-    // TODO: add/create spinner
     SpinnerModule,
+    FormSectionHeaderModule,
     // angular material
     FlexLayoutModule,
     MatCardModule

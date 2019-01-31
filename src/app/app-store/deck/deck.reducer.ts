@@ -13,8 +13,7 @@ export const getDecksForGroup = (groupId: string) => (state: AppState) =>
 /**
  * Selector function that returns all decks
  */
-export const getDecks = (state: AppState) =>
-  Object.keys(state.decks.recent).map(deckId => state.decks.decks[deckId]);
+export const getDecks = (state: AppState) => Object.values(state.decks.decks);
 
 /**
  * Selector function that returns decks only created by the user

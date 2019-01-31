@@ -1,18 +1,23 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, QueryFn } from '@angular/fire/firestore';
-import { Observable, combineLatest, forkJoin } from 'rxjs';
+import { combineLatest, forkJoin, Observable } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+import { Collections } from 'src/app/config/collections';
+import { RoleTypes } from 'src/app/config/roles';
 import { Group } from 'src/app/models/group';
 import { User } from 'src/app/models/user';
-import { Collections } from 'src/app/config/collections';
-import { switchMap, tap, map } from 'rxjs/operators';
-import { UserGroupsCollection } from 'src/app/models/user-groups-collection';
 import { CreateGroupForm } from 'src/app/modules/group-create/create-group-form';
+import { GroupSecurityService } from '../group-security/group-security.service';
+import { logger } from '../../logger';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GroupService {
-  constructor(private db: AngularFirestore) {}
+  constructor(
+    private db: AngularFirestore,
+    private groupSecurity: GroupSecurityService
+  ) {}
 
   /**
    * Creates a new group, and adds a reference to the current user
@@ -33,35 +38,47 @@ export class GroupService {
       this.db
         .collection(Collections.Groups)
         .doc(uid)
-        .set(group)
+        .set(group),
+      this.groupSecurity.join({
+        type: RoleTypes.Admin,
+        group,
+        user
+      })
     ).pipe(map(() => group));
   }
 
+  public listUserGroups(params: {
+    user: User;
+    queryFn?: QueryFn;
+  }): Observable<Group[]> {
+    logger.log('asdfasdfasd');
+    const { user, queryFn } = params;
+    // get all groups for the current user
+    // for now just return all groups!
+    return this.groupSecurity.getUsersGroups(user).pipe(
+      map(permissions =>
+        permissions.map(permission => permission.groupId).filter(_ => _)
+      ),
+      switchMap(groupIds =>
+        combineLatest(
+          ...groupIds.map(groupId => this.getGroupById(groupId, queryFn))
+        )
+      )
+    );
+  }
   /**
-   * Returns all the groups the user has access too, according to their
-   * groups sub-collection.
+   * Returns all groups with query function.
    * @param params general params
    */
   public list(params: { user: User; queryFn?: QueryFn }): Observable<Group[]> {
     const { user, queryFn } = params;
-    // get all groups for the current user
-    return this.db
-      .collection(Collections.Users)
-      .doc(user.uid)
-      .collection<UserGroupsCollection>(Collections.Groups)
-      .valueChanges()
-      .pipe(
-        switchMap(groupsCollection =>
-          combineLatest(
-            // always return the user's current default group
-            this.getGroupById(user.uid),
-            // also, return all the groups the user has access to
-            ...Object.keys(groupsCollection).map(groupId =>
-              this.getGroupById(groupId, queryFn)
-            )
+    return queryFn
+      ? this.db.collection<Group>(Collections.Groups, queryFn).valueChanges()
+      : this.db
+          .collection<Group>(Collections.Groups, ref =>
+            ref.where('private', '==', false)
           )
-        )
-      );
+          .valueChanges();
   }
   /**
    * Returns a single group, for the given id
