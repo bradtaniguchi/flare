@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -35,7 +35,13 @@ import { SearchUserGroups } from 'src/app/app-store/group/group.actions';
               <ng-container *ngIf="!decks.length">
                 <p>No Decks, please create one by clicking on the right</p>
               </ng-container>
-              <app-dashboard-deck *ngFor="let deck of decks" [deck]="deck">
+              <app-dashboard-deck
+                *ngFor="let deck of decks"
+                [deck]="deck"
+                (edit)="editDeck($event)"
+                (study)="studyDeck($event)"
+                (remove)="removeDeck($event)"
+              >
               </app-dashboard-deck>
             </ng-container>
           </app-spinner-container>
@@ -74,7 +80,11 @@ export class DashboardComponent implements OnInit {
   public groupsLoading$: Observable<boolean>;
 
   private user: User;
-  constructor(private store: Store<AppState>, private route: ActivatedRoute) {}
+  constructor(
+    private store: Store<AppState>,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     // used resolve value from resolver
@@ -97,5 +107,18 @@ export class DashboardComponent implements OnInit {
     this.groupsLoading$ = this.store.pipe(
       select(state => !state.groups.userGroupsLoaded)
     );
+  }
+
+  studyDeck(deck: Deck) {
+    logger.log('study deck called: ', deck);
+    this.router.navigate(['/', 'decks', 'study', deck.uid]);
+  }
+
+  editDeck(deck: Deck) {
+    logger.log('edit deck called: ', deck);
+    this.router.navigate(['/', 'decks', 'edit', deck.uid]);
+  }
+  removeDeck(deck: Deck) {
+    logger.log('remove deck called:', deck);
   }
 }

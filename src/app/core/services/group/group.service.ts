@@ -51,7 +51,6 @@ export class GroupService {
     user: User;
     queryFn?: QueryFn;
   }): Observable<Group[]> {
-    logger.log('asdfasdfasd');
     const { user, queryFn } = params;
     // get all groups for the current user
     // for now just return all groups!

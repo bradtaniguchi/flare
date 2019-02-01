@@ -5,7 +5,8 @@ import {
   MatCardModule,
   MatButtonModule,
   MatIconModule,
-  MatListModule
+  MatListModule,
+  MatMenuModule
 } from '@angular/material';
 import { MatRippleModule } from '@angular/material/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -20,7 +21,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     MatCardModule,
     MatButtonModule,
     MatIconModule,
-    MatListModule
+    MatListModule,
+    MatMenuModule
   ],
   exports: [DashboardDeckComponent]
 })
