@@ -44,3 +44,12 @@ mat-sidenav {
   position: absolute;
   bottom: 0;
 }
+
+mat-icon.center-icon {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.clickable {
+  cursor: pointer;
+}
