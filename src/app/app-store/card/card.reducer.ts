@@ -1,31 +1,18 @@
 import { Card } from 'src/app/models/card';
-import { AppState } from '../app-state';
-import { CardActions, CardActionTypes } from './card.actions';
 import { toMap } from 'src/app/utils/to-map';
-import { logger } from 'src/app/core/logger';
-
-export const getRecentCards = (state: AppState) =>
-  state.cards.recent.map(cardId => state.cards.cards[cardId]);
+import { CardActions, CardActionTypes } from './card.actions';
 
 export interface CardState {
   /**
-   * List of cards that were "recently" viewed/edited.
-   */
-  recent: string[];
-  /**
-   * Local cache of cards locally
+   * List of cards for the current deck being viewed/edited
    */
   cards: { [key: string]: Card };
   cardsLoaded: boolean;
-  recentLoaded: boolean;
 }
-
 export function CardReducer(
   state: CardState = {
-    recent: [],
     cards: {},
-    cardsLoaded: false,
-    recentLoaded: true
+    cardsLoaded: false
   },
   action: CardActions
 ): CardState {
@@ -36,15 +23,7 @@ export function CardReducer(
         ...state,
         cards: { ...state.cards, [action.payload.uid]: action.payload }
       };
-    // generic searching
-    case CardActionTypes.Search:
-      return { ...state, cardsLoaded: false };
-    case CardActionTypes.SearchSuccess:
-      return { ...state, cards: toMap(action.payload) };
-    case CardActionTypes.SearchFailed:
-      return { ...state, cards: {} };
-
-    // get for deck
+    // get cards for deck
     case CardActionTypes.Get:
       return { ...state, cardsLoaded: false };
     case CardActionTypes.GetSuccess:

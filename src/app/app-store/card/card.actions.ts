@@ -1,17 +1,14 @@
-import { CreateCardForm } from 'src/app/modules/card-create/create-card-form';
 import { Action } from '@ngrx/store';
 import { Card } from 'src/app/models/card';
-import { QueryFn } from '@angular/fire/firestore';
-import { DeckId } from 'src/app/models/deck';
+import { CreateCardForm } from 'src/app/modules/card-create/create-card-form';
 
 export enum CardActionTypes {
   Create = '[Card] create',
   CreateSuccess = '[Card] createSuccess',
   CreateFailed = '[Card] createFailed',
-  // search
-  Search = '[Card] search',
-  SearchSuccess = '[Card] searchSuccess',
-  SearchFailed = '[Card] searchFailed',
+  // // search
+  // UpdateSearchedCards = '[Card] UpdateSearchedCards',
+  // UpdateSearchCardsFailed = '[Card] searchFailed',
   // get cards for a given deck
   Get = '[Card] get',
   GetSuccess = '[Card] getSuccess',
@@ -23,9 +20,8 @@ export type CardActions =
   | CreateCardSuccess
   | CreateCardFailed
   // search
-  | SearchCards
-  | SearchCardsSuccess
-  | SearchCardsFailed
+  // | UpdateSearchedCards
+  // | UpdateSearchCardsFailed
   // gets cards for a given deck
   | GetCards
   | GetCardsSuccess
@@ -44,23 +40,23 @@ export class CreateCardFailed implements Action {
 }
 
 // search
-export class SearchCards implements Action {
-  readonly type = CardActionTypes.Search;
-  constructor(
-    public payload: {
-      queryFn?: QueryFn;
-      deckId?: string;
-    }
-  ) {}
-}
-export class SearchCardsSuccess implements Action {
-  readonly type = CardActionTypes.SearchSuccess;
-  constructor(public payload: Card[]) {}
-}
+// export class SearchCards implements Action {
+//   readonly type = CardActionTypes.Search;
+//   constructor(
+//     public payload: {
+//       queryFn?: QueryFn;
+//       deckId?: string;
+//     }
+//   ) {}
+// }
+// export class UpdateSearchedCards implements Action {
+//   readonly type = CardActionTypes.UpdateSearchedCards;
+//   constructor(public payload: Card[]) {}
+// }
 
-export class SearchCardsFailed implements Action {
-  readonly type = CardActionTypes.SearchFailed;
-}
+// export class UpdateSearchCardsFailed implements Action {
+//   readonly type = CardActionTypes.SearchFailed;
+// }
 
 export class GetCards implements Action {
   readonly type = CardActionTypes.Get;
