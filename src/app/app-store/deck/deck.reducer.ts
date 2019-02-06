@@ -38,12 +38,31 @@ export function DeckReducer(
         ...state,
         decks: { ...state.decks, [action.payload.uid]: action.payload }
       };
+    // search
     case DeckActionTypes.Search:
       return { ...state, decksLoaded: false };
     case DeckActionTypes.SearchSuccess:
       return { ...state, decks: toMap(action.payload), decksLoaded: true };
     case DeckActionTypes.SearchFailed:
       return { ...state, decksLoaded: true };
+
+    // get
+    case DeckActionTypes.Get:
+      return { ...state, decksLoaded: false };
+    case DeckActionTypes.GetSuccess:
+      return {
+        ...state,
+        decksLoaded: true,
+        decks: {
+          ...state.decks,
+          [action.payload.uid]: action.payload
+        }
+      };
+    case DeckActionTypes.GetFailed:
+      return {
+        ...state,
+        decksLoaded: true
+      };
     default:
       return state;
   }

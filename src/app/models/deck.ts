@@ -24,7 +24,7 @@ export interface Deck extends GenericModel {
   /**
    * A map of all the cards within this deck
    */
-  cards?: { [key: string]: string };
+  cards?: { [key: string]: true };
 
   /**
    * The group this deck belongs too

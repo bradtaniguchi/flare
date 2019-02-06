@@ -5,22 +5,22 @@ import { of } from 'rxjs';
 import {
   catchError,
   map,
-  switchMap,
-  withLatestFrom,
   mergeMap,
-  tap
+  switchMap,
+  withLatestFrom
 } from 'rxjs/operators';
+import { logger } from 'src/app/core/logger';
 import { CardService } from 'src/app/core/services/card/card.service';
 import { AppState } from '../app-state';
 import {
   CardActionTypes,
-  SearchRecentCardsFailed,
-  SearchRecentCardsSuccess,
   CreateCard,
   CreateCardFailed,
-  CreateCardSuccess
+  CreateCardSuccess,
+  GetCards,
+  GetCardsFailed,
+  GetCardsSuccess
 } from './card.actions';
-import { logger } from 'src/app/core/logger';
 
 @Injectable()
 export class CardEffects {
@@ -42,14 +42,18 @@ export class CardEffects {
   );
 
   @Effect()
-  public searchRecent$ = this.actions$.pipe(
-    ofType(CardActionTypes.SearchRecent),
-    withLatestFrom(this.store.select(state => state.auth.user)),
-    switchMap(([_, user]) => this.card.listRecent({ user })),
-    map(res => new SearchRecentCardsSuccess(res)),
+  public get$ = this.actions$.pipe(
+    ofType(CardActionTypes.Get),
+    // withLatestFrom(this.store.select(state => state.auth.user)),
+    switchMap((action: GetCards) =>
+      this.card.search({
+        queryFn: ref => ref.where('deck', '==', action.payload)
+      })
+    ),
+    map(res => new GetCardsSuccess(res)),
     catchError(err => {
       logger.error(err);
-      return of(new SearchRecentCardsFailed());
+      return of(new GetCardsFailed());
     })
   );
 }

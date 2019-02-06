@@ -32,6 +32,11 @@ const routes: Routes = [
         pathMatch: 'full'
       },
       {
+        path: 'decks/study',
+        loadChildren: './modules/deck-study/deck-study.module#DeckStudyModule'
+        // pathMatch: 'full'
+      },
+      {
         path: 'groups/create',
         loadChildren:
           './modules/group-create/group-create.module#GroupCreateModule',
@@ -60,7 +65,7 @@ const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'dashboard'
+    redirectTo: '/dashboard'
   }
 ];
 

@@ -2,6 +2,7 @@ import { CreateCardForm } from 'src/app/modules/card-create/create-card-form';
 import { Action } from '@ngrx/store';
 import { Card } from 'src/app/models/card';
 import { QueryFn } from '@angular/fire/firestore';
+import { DeckId } from 'src/app/models/deck';
 
 export enum CardActionTypes {
   Create = '[Card] create',
@@ -9,13 +10,12 @@ export enum CardActionTypes {
   CreateFailed = '[Card] createFailed',
   // search
   Search = '[Card] search',
-  SearchSuccess = '[Card] search',
-  SearchFailed = '[Card] search',
-  // recent actions
-  SearchRecent = '[Card] searchRecent',
-  SearchRecentSuccess = '[Card] searchRecentSuccess',
-  SearchRecentFailed = '[Card] searchRecentFailed',
-  SearchRecentStop = '[Card] searchRecentStop'
+  SearchSuccess = '[Card] searchSuccess',
+  SearchFailed = '[Card] searchFailed',
+  // get cards for a given deck
+  Get = '[Card] get',
+  GetSuccess = '[Card] getSuccess',
+  GetFailed = '[Card] getFailed'
 }
 
 export type CardActions =
@@ -26,11 +26,10 @@ export type CardActions =
   | SearchCards
   | SearchCardsSuccess
   | SearchCardsFailed
-  // recent
-  | SearchRecentCards
-  | SearchRecentCardsFailed
-  | SearchRecentCardsSuccess
-  | SearchRecentCardsStop;
+  // gets cards for a given deck
+  | GetCards
+  | GetCardsSuccess
+  | GetCardsFailed;
 
 export class CreateCard implements Action {
   readonly type = CardActionTypes.Create;
@@ -50,7 +49,7 @@ export class SearchCards implements Action {
   constructor(
     public payload: {
       queryFn?: QueryFn;
-      groupId?: string;
+      deckId?: string;
     }
   ) {}
 }
@@ -62,21 +61,19 @@ export class SearchCardsSuccess implements Action {
 export class SearchCardsFailed implements Action {
   readonly type = CardActionTypes.SearchFailed;
 }
-// recent
-export class SearchRecentCards implements Action {
-  readonly type = CardActionTypes.SearchRecent;
+
+export class GetCards implements Action {
+  readonly type = CardActionTypes.Get;
+  /**
+   * @param payload The deckId
+   */
+  constructor(public payload: string) {}
 }
 
-export class SearchRecentCardsSuccess implements Action {
-  readonly type = CardActionTypes.SearchRecentSuccess;
+export class GetCardsSuccess implements Action {
+  readonly type = CardActionTypes.GetSuccess;
   constructor(public payload: Card[]) {}
 }
-
-export class SearchRecentCardsFailed implements Action {
-  readonly type = CardActionTypes.SearchRecentFailed;
-  constructor() {}
-}
-
-export class SearchRecentCardsStop implements Action {
-  readonly type = CardActionTypes.SearchRecentStop;
+export class GetCardsFailed implements Action {
+  readonly type = CardActionTypes.GetFailed;
 }

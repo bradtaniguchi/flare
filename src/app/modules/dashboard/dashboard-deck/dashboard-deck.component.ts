@@ -1,13 +1,12 @@
 import {
-  Component,
-  OnInit,
   ChangeDetectionStrategy,
-  Input,
+  Component,
   EventEmitter,
+  Input,
+  OnInit,
   Output
 } from '@angular/core';
 import { Deck } from 'src/app/models/deck';
-import { logger } from 'src/app/core/logger';
 
 @Component({
   selector: 'app-dashboard-deck',
@@ -35,14 +34,14 @@ import { logger } from 'src/app/core/logger';
               type="button"
               mat-button
               color="primary"
-              (click)="study.emit(deck)"
+              (click)="study.emit(deck); $event.stopPropagation()"
             >
               Study
             </button>
             <button
               type="button"
               mat-button
-              (click)="edit.emit(deck) && $event.stopPropagation()"
+              (click)="edit.emit(deck); $event.stopPropagation()"
             >
               <mat-icon>edit</mat-icon> Edit
             </button>
@@ -53,6 +52,7 @@ import { logger } from 'src/app/core/logger';
             aria-label="More Options"
             fxFlexAlign="end"
             [matMenuTriggerFor]="menu"
+            (click)="$event.stopPropagation()"
           >
             <!-- TODO: make menu appear -->
             <mat-icon>more_vert</mat-icon>

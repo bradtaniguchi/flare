@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, QueryFn } from '@angular/fire/firestore';
-import { forkJoin, Observable, of } from 'rxjs';
+import { forkJoin, Observable, of, from } from 'rxjs';
 import { Collections } from 'src/app/config/collections';
 import { Deck } from 'src/app/models/deck';
 import { User } from 'src/app/models/user';
 import { GenericDbService } from '../generic-db/generic-db.service';
 import { CreateDeckForm } from 'src/app/modules/deck-create/create-deck-form';
-import { map } from 'rxjs/operators';
+import { map, mergeMap, tap } from 'rxjs/operators';
 import { CardService } from '../card/card.service';
 import { CreateCardForm } from 'src/app/modules/card-create/create-card-form';
 
@@ -36,17 +36,43 @@ export class DeckService extends GenericDbService {
     const cardForms = form.cards.map(
       cardForm => ({ ...cardForm, deck } as CreateCardForm)
     );
-    return forkJoin(
-      this.db
-        .collection(Collections.Decks)
-        .doc(uid)
-        .set(deck),
-      this.db
-        .collection(Collections.Groups)
-        .doc(deck.group)
-        .update({ [`decks.${uid}`]: uid }),
-      this.card.createBulk(cardForms, user)
-    ).pipe(map(() => deck));
+
+    return from(this.card.createBulk(cardForms, user)).pipe(
+      tap(cards => {
+        const cardIds = cards.reduce(
+          (cardIds, card) => {
+            cardIds[card.uid] = true;
+            return cardIds;
+          },
+          {} as { [key: string]: true }
+        );
+        deck.cards = cardIds;
+      }),
+      mergeMap(() =>
+        forkJoin(
+          this.db
+            .collection(Collections.Decks)
+            .doc(uid)
+            .set(deck),
+          this.db
+            .collection(Collections.Groups)
+            .doc(deck.group)
+            .update({ [`decks.${uid}`]: uid })
+        )
+      ),
+      map(() => deck)
+    );
+    // return forkJoin(
+    //   this.db
+    //     .collection(Collections.Decks)
+    //     .doc(uid)
+    //     .set(deck),
+    //   this.db
+    //     .collection(Collections.Groups)
+    //     .doc(deck.group)
+    //     .update({ [`decks.${uid}`]: uid })
+    //   // this.card.createBulk(cardForms, user)
+    // ).pipe(map(() => deck));
   }
 
   /**
@@ -59,5 +85,17 @@ export class DeckService extends GenericDbService {
     return !!queryFn
       ? this.db.collection<Deck>(Collections.Decks, queryFn).valueChanges()
       : of([]);
+  }
+
+  /**
+   * Returns an observable of the given deck within firestore.
+   * @param params general params
+   */
+  public get(params: { deckId: string; user: User }): Observable<Deck> {
+    const { user, deckId } = params;
+    return this.db
+      .collection<Deck>(Collections.Decks)
+      .doc<Deck>(deckId)
+      .valueChanges();
   }
 }

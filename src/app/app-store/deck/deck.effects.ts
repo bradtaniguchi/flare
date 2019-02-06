@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AppState } from '../app-state';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Effect, Actions, ofType } from '@ngrx/effects';
 import {
   DeckActionTypes,
@@ -9,7 +9,10 @@ import {
   SearchDecks,
   CreateDeck,
   CreateDeckSuccess,
-  CreateDeckFailed
+  CreateDeckFailed,
+  GetDeck,
+  GetDeckSuccess,
+  GetDeckFailed
 } from './deck.actions';
 import {
   withLatestFrom,
@@ -19,10 +22,11 @@ import {
   mergeMap
 } from 'rxjs/operators';
 import { DeckService } from 'src/app/core/services/deck/deck.service';
-import { of } from 'rxjs';
+import { of, Observable } from 'rxjs';
 import { User } from 'src/app/models/user';
 import { Notify } from '../notify/notify.actions';
 import { logger } from 'src/app/core/logger';
+import { Deck } from 'src/app/models/deck';
 
 @Injectable()
 export class DeckEffects {
@@ -60,6 +64,20 @@ export class DeckEffects {
     catchError(err => {
       logger.error(err);
       return of(new SearchDecksFailed());
+    })
+  );
+
+  @Effect()
+  public get$ = this.actions$.pipe(
+    ofType(DeckActionTypes.Get),
+    withLatestFrom(this.store.select(state => state.auth.user)),
+    switchMap(([action, user]: [GetDeck, User]) =>
+      this.deck.get({ deckId: action.payload, user })
+    ),
+    map(res => new GetDeckSuccess(res)),
+    catchError(err => {
+      logger.error(err);
+      return of(new GetDeckFailed());
     })
   );
 }

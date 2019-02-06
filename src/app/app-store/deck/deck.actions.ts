@@ -12,16 +12,29 @@ export enum DeckActionTypes {
   Search = '[Deck] searchRecent',
   SearchSuccess = '[Deck] searchSuccess',
   SearchFailed = '[Deck] searchFailed',
-  SearchStop = '[Deck] searchStop'
+  SearchStop = '[Deck] searchStop',
+
+  // get
+  Get = '[Deck] get',
+  GetSuccess = '[Deck] getSuccess',
+  GetFailed = '[Deck] getFailed',
+  GetStop = ' [Deck] getStop'
 }
 
 export type DeckActions =
+  // creationg
   | CreateDeck
   | CreateDeckSuccess
   | CreateDeckFailed
+  // searching
   | SearchDecks
   | SearchDecksSuccess
-  | SearchDecksFailed;
+  | SearchDecksFailed
+  // get
+  | GetDeck
+  | GetDeckSuccess
+  | GetDeckFailed
+  | StopGettingDeck;
 
 export class CreateDeck implements Action {
   readonly type = DeckActionTypes.Create;
@@ -47,4 +60,24 @@ export class SearchDecksSuccess implements Action {
 
 export class SearchDecksFailed implements Action {
   readonly type = DeckActionTypes.SearchFailed;
+}
+
+// get
+export class GetDeck implements Action {
+  readonly type = DeckActionTypes.Get;
+  constructor(public payload: string) {}
+}
+
+export class GetDeckSuccess implements Action {
+  readonly type = DeckActionTypes.GetSuccess;
+  constructor(public payload: Deck) {}
+}
+
+export class GetDeckFailed implements Action {
+  readonly type = DeckActionTypes.GetFailed;
+  constructor() {}
+}
+
+export class StopGettingDeck implements Action {
+  readonly type = DeckActionTypes.GetStop;
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore, QueryFn } from '@angular/fire/firestore';
 import { forkJoin, from, Observable, combineLatest, of } from 'rxjs';
 import { Collections } from 'src/app/config/collections';
 import { Card } from 'src/app/models/card';
@@ -84,8 +84,13 @@ export class CardService extends GenericDbService {
     );
   }
 
+  public search(params: { queryFn: QueryFn }): Observable<Card[]> {
+    const { queryFn } = params;
+    return this.db.collection<Card>(Collections.Cards, queryFn).valueChanges();
+  }
   /**
    * Loads the "recent" cards for a given user
+   * @deprecated
    * @param params general params
    */
   public listRecent(params: {
