@@ -1,17 +1,13 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
-import { AppState } from 'src/app/app-store/app-state';
-import { SearchDecks } from 'src/app/app-store/deck/deck.actions';
-import { getDecks } from 'src/app/app-store/deck/deck.reducer';
+import { map, share, startWith, tap } from 'rxjs/operators';
 import { logger } from 'src/app/core/logger';
-import { Card } from 'src/app/models/card';
+import { DeckService } from 'src/app/core/services/deck/deck.service';
+import { GroupService } from 'src/app/core/services/group/group.service';
 import { Deck } from 'src/app/models/deck';
-import { User } from 'src/app/models/user';
 import { Group } from 'src/app/models/group';
-import { SearchUserGroups } from 'src/app/app-store/group/group.actions';
+import { User } from 'src/app/models/user';
 
 @Component({
   selector: 'app-dashboard',
@@ -81,7 +77,9 @@ export class DashboardComponent implements OnInit {
 
   private user: User;
   constructor(
-    private store: Store<AppState>,
+    // private store: Store<AppState>,
+    private deckService: DeckService,
+    private groupService: GroupService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
@@ -89,24 +87,32 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     // used resolve value from resolver
     this.user = this.route.snapshot.data.user;
-    // find all decks for the current user
-    this.store.dispatch(
-      new SearchDecks(ref => ref.where('createdBy', '==', this.user.uid))
+    this.decks$ = this.observeDecks();
+    this.decksLoading$ = this.decks$.pipe(
+      map(decks => !decks),
+      startWith(true)
     );
 
-    // find all groups the user has access to
-    this.store.dispatch(new SearchUserGroups());
-
-    this.decksLoading$ = this.store.pipe(
-      select(state => !state.decks.decksLoaded)
+    this.groups$ = this.observeGroups();
+    this.groupsLoading$ = this.groups$.pipe(
+      map(groups => !groups),
+      startWith(true)
     );
-    // any and all decks, will be "recent"
-    this.decks$ = this.store.pipe(select(getDecks));
+  }
 
-    this.groups$ = this.store.pipe(select(state => state.groups.usersGroups));
-    this.groupsLoading$ = this.store.pipe(
-      select(state => !state.groups.userGroupsLoaded)
-    );
+  private observeDecks(): Observable<Deck[]> {
+    return this.deckService
+      .list({
+        user: this.user,
+        queryFn: ref => ref.where('createdBy', '==', this.user.uid)
+      })
+      .pipe(
+        share(),
+        tap(decks => logger.log('test with decks: ', decks))
+      );
+  }
+  private observeGroups(): Observable<Group[]> {
+    return this.groupService.listUserGroups({ user: this.user }).pipe(share());
   }
 
   studyDeck(deck: Deck) {

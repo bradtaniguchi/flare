@@ -1,20 +1,15 @@
 import { Location } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-  FormArray,
-  FormControl
-} from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { take } from 'rxjs/operators';
 import { AppState } from 'src/app/app-store/app-state';
-import { VIEWER_ROLE, EDITOR_ROLE, ADMIN_ROLE } from 'src/app/config/roles';
+import { SetLoading } from 'src/app/app-store/loading/loading.actions';
+import { Notify } from 'src/app/app-store/notify/notify.actions';
+import { ADMIN_ROLE, EDITOR_ROLE } from 'src/app/config/roles';
+import { GroupService } from 'src/app/core/services/group/group.service';
 import { User } from 'src/app/models/user';
-import { UserAndRole } from 'src/app/models/user-and-role';
-import { CreateGroup } from 'src/app/app-store/group/group.actions';
-import { CreateGroupForm } from './create-group-form';
 
 @Component({
   selector: 'app-group-create',
@@ -71,6 +66,7 @@ export class GroupCreateComponent implements OnInit {
   public userControls: FormGroup[];
   constructor(
     private store: Store<AppState>,
+    private groupService: GroupService,
     private location: Location,
     private route: ActivatedRoute,
     private router: Router,
@@ -130,8 +126,21 @@ export class GroupCreateComponent implements OnInit {
 
   submit(form: FormGroup) {
     if (form.valid) {
-      this.store.dispatch(new CreateGroup(form.value as CreateGroupForm));
-      this.router.navigate(['/']);
+      this.store.dispatch(new SetLoading(true));
+      this.groupService
+        .create(form.value, this.user)
+        .pipe(take(1))
+        .subscribe(
+          () => {
+            this.store.dispatch(
+              new Notify({ message: 'Successfully created group' })
+            );
+            this.router.navigate(['/']);
+          },
+          () =>
+            this.store.dispatch(new Notify({ message: 'Error created group' })),
+          () => this.store.dispatch(new SetLoading(false))
+        );
     }
   }
 }

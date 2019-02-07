@@ -7,7 +7,7 @@ import {
   Output
 } from '@angular/core';
 import { select, Store } from '@ngrx/store';
-import { Observable, combineLatest } from 'rxjs';
+import { Observable, combineLatest, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppState } from 'src/app/app-store/app-state';
 import { Group } from 'src/app/models/group';
@@ -73,16 +73,18 @@ export class GroupListItemComponent implements OnInit {
   constructor(private store: Store<AppState>) {}
 
   ngOnInit() {
-    this.loadedUserGroups$ = this.store.pipe(
-      select(state => state.groups.userGroupsLoaded)
-    );
-    this.canLeave$ = this.store.pipe(
-      select(state => state.groups.usersGroups),
-      map(
-        userGroups =>
-          !!userGroups.find(userGroup => userGroup.uid === this.group.uid)
-      )
-    );
+    this.loadedUserGroups$ = of(true);
+    this.canLeave$ = of(true);
+    // this.loadedUserGroups$ = this.store.pipe(
+    //   select(state => state.groups.userGroupsLoaded)
+    // );
+    // this.canLeave$ = this.store.pipe(
+    //   select(state => state.groups.usersGroups),
+    //   map(
+    //     userGroups =>
+    //       !!userGroups.find(userGroup => userGroup.uid === this.group.uid)
+    //   )
+    // );
 
     this.showJoin$ = this.showJoin();
     this.showLeave$ = this.showLeave();

@@ -6,26 +6,22 @@ import {
   OnInit
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { select, Store } from '@ngrx/store';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { Observable, of, Subject } from 'rxjs';
-import {
-  distinctUntilChanged,
-  switchMap,
-  takeUntil,
-  tap
-} from 'rxjs/operators';
+import { switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { AppState } from 'src/app/app-store/app-state';
-import { CreateCard } from 'src/app/app-store/card/card.actions';
-import { SearchDecks } from 'src/app/app-store/deck/deck.actions';
-import { getDecksForGroup } from 'src/app/app-store/deck/deck.reducer';
-import { SearchGroups } from 'src/app/app-store/group/group.actions';
+import { SetLoading } from 'src/app/app-store/loading/loading.actions';
+import { Notify } from 'src/app/app-store/notify/notify.actions';
+import { logger } from 'src/app/core/logger';
+import { CardService } from 'src/app/core/services/card/card.service';
+import { DeckService } from 'src/app/core/services/deck/deck.service';
+import { GroupService } from 'src/app/core/services/group/group.service';
 import { Card } from 'src/app/models/card';
 import { Deck } from 'src/app/models/deck';
 import { Group } from 'src/app/models/group';
 import { User } from 'src/app/models/user';
 import { CreateCardForm } from './create-card-form';
-import { logger } from 'src/app/core/logger';
 
 @Component({
   selector: 'app-card-create',
@@ -71,9 +67,13 @@ export class CardCreateComponent implements OnInit, OnDestroy {
   private takeUntil = new Subject();
   constructor(
     private location: Location,
+    private cardService: CardService,
+    private groupService: GroupService,
+    private deckService: DeckService,
     private store: Store<AppState>,
     private fb: FormBuilder,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -81,7 +81,6 @@ export class CardCreateComponent implements OnInit, OnDestroy {
     this.user = this.route.snapshot.data.user;
 
     this.form = this.buildForm();
-    this.store.dispatch(new SearchGroups());
     this.groups$ = this.observeGroups();
 
     this.form
@@ -116,10 +115,11 @@ export class CardCreateComponent implements OnInit, OnDestroy {
    * group to be the same as the current user id (this is the default group)
    */
   private observeGroups(): Observable<Group[]> {
-    return this.store.pipe(
-      select(state => state.groups.groups),
-      tap((groups: Group[]) => this.setDefaultGroup(groups))
-    );
+    return this.groupService
+      .listUserGroups({
+        user: this.user
+      })
+      .pipe(tap((groups: Group[]) => this.setDefaultGroup(groups)));
   }
   /**
    * Sets the default group, if one isn't already selected
@@ -137,18 +137,13 @@ export class CardCreateComponent implements OnInit, OnDestroy {
    */
   private observeDecks(): Observable<Deck[]> {
     return this.form.get('group').valueChanges.pipe(
-      // this is to prevent duplicate calls for "undefined"
-      distinctUntilChanged(),
-      tap((group: Group) =>
-        this.store.dispatch(
-          new SearchDecks(
-            // if there is a group selected then "search" for groups.
-            group ? ref => ref.where('group', '==', group.uid) : undefined
-          )
-        )
-      ),
       switchMap((group: Group) =>
-        !!group ? this.store.select(getDecksForGroup(group.uid)) : of([])
+        group
+          ? this.deckService.list({
+              user: this.user,
+              queryFn: ref => ref.where('group', '==', group.uid)
+            })
+          : of([])
       ),
       tap(decks => this.setDefaultDeck(decks))
     );
@@ -171,7 +166,27 @@ export class CardCreateComponent implements OnInit, OnDestroy {
   submit(event: Event, form: FormGroup) {
     if (form.valid) {
       logger.log('event:', event, 'form:', form);
-      this.store.dispatch(new CreateCard(form.value as CreateCardForm));
+      this.store.dispatch(new SetLoading(true));
+      this.cardService
+        .create(form.value as CreateCardForm, this.user)
+        .pipe(take(1))
+        .subscribe(
+          () => {
+            this.store.dispatch(
+              new Notify({
+                message: 'Successfully created card'
+              })
+            );
+            this.router.navigate(['/']);
+          },
+          () =>
+            this.store.dispatch(
+              new Notify({
+                message: 'Error creating card'
+              })
+            ),
+          () => this.store.dispatch(new SetLoading(false))
+        );
     }
   }
 }

@@ -4,28 +4,22 @@ import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from 'src/environments/environment';
 import { AppState } from './app-state';
-import { LoadingReducer } from './loading/loading.reducer';
-import { SyncReducer } from './sync/sync.reducer';
-import { AuthReducer } from './auth/auth.reducer';
 import { AuthEffects } from './auth/auth.effects';
-import { CardEffects } from './card/card.effects';
-import { CardReducer } from './card/card.reducer';
-import { DeckReducer } from './deck/deck.reducer';
-import { GroupReducer } from './group/group.reducer';
-import { DeckEffects } from './deck/deck.effects';
-import { GroupEffects } from './group/group.effects';
+import { AuthReducer } from './auth/auth.reducer';
+import { LoadingReducer } from './loading/loading.reducer';
 import { NotifyEffects } from './notify/notify.effects';
-import { UserReducer } from './user/user.reducer';
+import { SyncReducer } from './sync/sync.reducer';
 import { UserEffects } from './user/user.effects';
+import { UserReducer } from './user/user.reducer';
 
 @NgModule({
   declarations: [],
   imports: [
     EffectsModule.forRoot([
       AuthEffects,
-      CardEffects,
-      DeckEffects,
-      GroupEffects,
+      // CardEffects,
+      // DeckEffects,
+      // GroupEffects,
       NotifyEffects,
       UserEffects
     ]),
@@ -33,9 +27,9 @@ import { UserEffects } from './user/user.effects';
       auth: AuthReducer,
       loading: LoadingReducer,
       sync: SyncReducer,
-      cards: CardReducer,
-      decks: DeckReducer,
-      groups: GroupReducer,
+      // cards: CardReducer,
+      // decks: DeckReducer,
+      // groups: GroupReducer,
       users: UserReducer
     }),
     environment.production ? [] : StoreDevtoolsModule.instrument()

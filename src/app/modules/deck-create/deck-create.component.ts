@@ -1,17 +1,19 @@
 import { Location } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { select, Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { take, tap } from 'rxjs/operators';
 import { AppState } from 'src/app/app-store/app-state';
-import { SearchGroups } from 'src/app/app-store/group/group.actions';
+import { SetLoading } from 'src/app/app-store/loading/loading.actions';
+import { Notify } from 'src/app/app-store/notify/notify.actions';
+import { logger } from 'src/app/core/logger';
+import { DeckService } from 'src/app/core/services/deck/deck.service';
+import { GroupService } from 'src/app/core/services/group/group.service';
 import { Group } from 'src/app/models/group';
 import { User } from 'src/app/models/user';
-import { CreateDeck } from 'src/app/app-store/deck/deck.actions';
 import { CreateDeckForm } from './create-deck-form';
-import { logger } from 'src/app/core/logger';
 
 @Component({
   selector: 'app-deck-create',
@@ -86,6 +88,8 @@ export class DeckCreateComponent implements OnInit {
   public cardControls: FormGroup[];
   constructor(
     private store: Store<AppState>,
+    private groupService: GroupService,
+    private deckService: DeckService,
     private location: Location,
     private route: ActivatedRoute,
     private router: Router,
@@ -98,7 +102,6 @@ export class DeckCreateComponent implements OnInit {
     this.form = this.buildForm();
     this.cardControls = (this.form.get('cards') as FormArray)
       .controls as FormGroup[];
-    this.store.dispatch(new SearchGroups());
     this.groups$ = this.observeGroups();
   }
 
@@ -122,10 +125,9 @@ export class DeckCreateComponent implements OnInit {
    * group to be the same as the current user id (this is the default group)
    */
   private observeGroups(): Observable<Group[]> {
-    return this.store.pipe(
-      select(state => state.groups.groups),
-      tap(groups => this.setDefaultGroup(groups))
-    );
+    return this.groupService
+      .listUserGroups({ user: this.user })
+      .pipe(tap((groups: Group[]) => this.setDefaultGroup(groups)));
   }
   /**
    * Sets the default group, if one isn't already selected
@@ -163,8 +165,21 @@ export class DeckCreateComponent implements OnInit {
   submit(event: Event, form: FormGroup) {
     if (form.valid) {
       logger.log('test with form:', form);
-      this.store.dispatch(new CreateDeck(form.value as CreateDeckForm));
-      this.router.navigate(['/']);
+      this.store.dispatch(new SetLoading(true));
+      this.deckService
+        .create(form.value as CreateDeckForm, this.user)
+        .pipe(take(1))
+        .subscribe(
+          () => {
+            this.store.dispatch(
+              new Notify({ message: 'Successfully created deck' })
+            );
+            this.router.navigate(['/']);
+          },
+          () =>
+            this.store.dispatch(new Notify({ message: 'Error creating deck' })),
+          () => this.store.dispatch(new SetLoading(false))
+        );
     }
   }
 }

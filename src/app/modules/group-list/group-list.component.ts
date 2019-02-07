@@ -2,14 +2,12 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { AppState } from 'src/app/app-store/app-state';
-import {
-  SearchGroups,
-  JoinGroup,
-  LeaveGroup,
-  SearchUserGroups
-} from 'src/app/app-store/group/group.actions';
 import { Group } from 'src/app/models/group';
 import { logger } from 'src/app/core/logger';
+import { GroupService } from 'src/app/core/services/group/group.service';
+import { User } from 'src/app/models/user';
+import { ActivatedRoute } from '@angular/router';
+import { share, startWith, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-group-list',
@@ -41,16 +39,26 @@ import { logger } from 'src/app/core/logger';
 export class GroupListComponent implements OnInit {
   public groupsLoading$: Observable<boolean>;
   public groups$: Observable<Group[]>;
-  constructor(private store: Store<AppState>) {}
+
+  private user: User;
+  constructor(
+    private store: Store<AppState>,
+    private route: ActivatedRoute,
+    private groupService: GroupService
+  ) {}
 
   ngOnInit() {
+    this.user = this.route.snapshot.data.user;
     // search all groups.
-    this.store.dispatch(new SearchGroups());
+    // this.store.dispatch(new SearchGroups());
     // also search the groups we already have.
-    this.store.dispatch(new SearchUserGroups());
-    this.groups$ = this.store.pipe(select(state => state.groups.groups));
-    this.groupsLoading$ = this.store.pipe(
-      select(state => !state.groups.groupsLoaded)
+    // this.store.dispatch(new SearchUserGroups());
+    this.groups$ = this.groupService
+      .listUserGroups({ user: this.user })
+      .pipe(share());
+    this.groupsLoading$ = this.groups$.pipe(
+      map(groups => !groups),
+      startWith(true)
     );
   }
 
@@ -60,16 +68,16 @@ export class GroupListComponent implements OnInit {
 
   join(group: Group, groups: Group[]) {
     logger.log('join called');
-    this.store.dispatch(
-      new JoinGroup({
-        group
-      })
-    );
+    // this.store.dispatch(
+    //   new JoinGroup({
+    //     group
+    //   })
+    // );
   }
 
   leave(group: Group, groups: Group[]) {
     logger.log('leave called');
-    this.store.dispatch(new LeaveGroup(group));
+    // this.store.dispatch(new LeaveGroup(group));
   }
 
   request(group: Group, groups: Group[]) {

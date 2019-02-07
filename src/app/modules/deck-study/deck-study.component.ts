@@ -1,13 +1,12 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { select, Store } from '@ngrx/store';
-import { Observable, Subject } from 'rxjs';
-import { map, switchMap, take } from 'rxjs/operators';
-import { AppState } from 'src/app/app-store/app-state';
-import { GetCards } from 'src/app/app-store/card/card.actions';
-import { GetDeck } from 'src/app/app-store/deck/deck.actions';
+import { Observable, of, Subject } from 'rxjs';
+import { map, share, startWith, switchMap } from 'rxjs/operators';
+import { CardService } from 'src/app/core/services/card/card.service';
+import { DeckService } from 'src/app/core/services/deck/deck.service';
 import { Card } from 'src/app/models/card';
 import { Deck } from 'src/app/models/deck';
+import { User } from 'src/app/models/user';
 
 @Component({
   selector: 'app-deck-study',
@@ -68,46 +67,47 @@ export class DeckStudyComponent implements OnInit {
 
   public cards$: Observable<Card[]>;
   public cardsLoading$: Observable<boolean>;
-  constructor(private route: ActivatedRoute, private store: Store<AppState>) {}
+  private user: User;
+  constructor(
+    private route: ActivatedRoute,
+    private deckService: DeckService,
+    private cardService: CardService
+  ) {}
 
   ngOnInit() {
+    this.user = this.route.snapshot.data.user;
     this.deckId$ = this.route.params.pipe(map(params => params.deckId));
-    this.deckId$.pipe(take(1)).subscribe(deckId => {
-      this.store.dispatch(new GetDeck(deckId));
-      this.store.dispatch(new GetCards(deckId));
-    });
     this.deck$ = this.observeDeck();
 
-    this.loadingDecks$ = this.store.pipe(
-      select(state => !state.decks.decksLoaded)
+    this.loadingDecks$ = this.deck$.pipe(
+      startWith(true),
+      map(deck => !deck)
     );
+
     this.cards$ = this.observeCards();
-    this.cardsLoading$ = this.store.pipe(
-      select(state => !state.cards.recentLoaded)
+    this.cardsLoading$ = this.cards$.pipe(
+      map(cards => !cards),
+      startWith(true)
     );
   }
 
   private observeDeck(): Observable<Deck> {
     return this.deckId$.pipe(
-      switchMap(deckId =>
-        // this wont work until we "wait" until the decks are loaded
-        this.store.pipe(select(state => state.decks.decks[deckId]))
-      )
+      switchMap(deckId => this.deckService.get({ deckId, user: this.user })),
+      share()
     );
   }
 
   private observeCards(): Observable<Card[]> {
     return this.deck$.pipe(
       switchMap(deck =>
-        this.store.pipe(
-          select(state => state.cards.cards),
-          map(cardMap =>
-            deck
-              ? Object.keys(deck.cards || {}).map(cardId => cardMap[cardId])
-              : []
-          )
-        )
-      )
+        deck
+          ? this.cardService.search({
+              queryFn: ref => ref.where('deck', '==', deck.uid)
+            })
+          : of([])
+      ),
+      share()
     );
   }
 }
