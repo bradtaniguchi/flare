@@ -40,16 +40,11 @@ TBD...
 
 ## Deployment
 
-TBD...
+This application uses firebase, as such you will need the [firebase-cli](https://github.com/firebase/firebase-tools). Once you have installed the CLI, you needd to configure your own project from the [firebase console](https://console.firebase.google.com/u/0/). Finally, add your environment keys (see above) to the app, build your project using `npm run build`, and then run `firebase deploy` within the `dist` folder built.
+
+**note** the build process will be changed in the future to make a single npm script to build+deploy.
+
 
 ## Testing
 
-TBD...
-
-## Reporting bugs
-
-TBD...
-
-## Contact
-
-TBD...
+You can run unit-tests using `npm run test`. Most tests will be built in the future. 
