@@ -11,6 +11,11 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
+    path: 'status',
+    loadChildren: './modules/status/status.module#StatusModule',
+    pathMatch: 'full'
+  },
+  {
     path: '',
     canActivate: [AuthGuard],
     children: [

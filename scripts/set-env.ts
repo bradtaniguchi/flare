@@ -1,9 +1,21 @@
 require('dotenv').config();
+import * as child_process from 'child_process';
 import { writeFile } from 'fs';
 
+const getRevision = () => {
+  console.log('getting hash...');
+  return child_process
+    .execSync('git rev-parse HEAD')
+    .toString()
+    .trim();
+};
+const revision = getRevision();
+console.log('got hash');
 const targetPath = `./src/app/config.ts`;
 const envConfigFile = `
 export const CONFIG = {
+  revision: "${revision}",
+  date: "${new Date()}",
   firebase: {
     apiKey: '${process.env.FIREBASE_API_KEY}',
     authDomain: '${process.env.FIREBASE_AUTH_DOMAIN}',

@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { AppState } from './app-store/app-state';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
+import { CONFIG } from './config';
 
 @Component({
   selector: 'app-root',
@@ -29,5 +31,8 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.state$ = this.store.pipe(select(state => state));
+    if (!environment.production) {
+      console.log('config', CONFIG);
+    }
   }
 }
