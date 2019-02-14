@@ -33,8 +33,13 @@ const routes: Routes = [
       },
       {
         path: 'decks/study',
-        loadChildren: './modules/deck-study/deck-study.module#DeckStudyModule'
+        // loadChildren: './modules/deck-study/deck-study.module#DeckStudyModule'
+        redirectTo: 'study'
         // pathMatch: 'full'
+      },
+      {
+        path: 'study',
+        loadChildren: './modules/study/study.module#StudyModule'
       },
       {
         path: 'groups/create',

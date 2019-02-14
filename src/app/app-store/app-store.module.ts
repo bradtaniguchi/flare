@@ -15,21 +15,11 @@ import { UserReducer } from './user/user.reducer';
 @NgModule({
   declarations: [],
   imports: [
-    EffectsModule.forRoot([
-      AuthEffects,
-      // CardEffects,
-      // DeckEffects,
-      // GroupEffects,
-      NotifyEffects,
-      UserEffects
-    ]),
+    EffectsModule.forRoot([AuthEffects, NotifyEffects, UserEffects]),
     StoreModule.forRoot<AppState>({
       auth: AuthReducer,
       loading: LoadingReducer,
       sync: SyncReducer,
-      // cards: CardReducer,
-      // decks: DeckReducer,
-      // groups: GroupReducer,
       users: UserReducer
     }),
     environment.production ? [] : StoreDevtoolsModule.instrument()

@@ -106,10 +106,7 @@ export class DashboardComponent implements OnInit {
         user: this.user,
         queryFn: ref => ref.where('createdBy', '==', this.user.uid)
       })
-      .pipe(
-        share(),
-        tap(decks => logger.log('test with decks: ', decks))
-      );
+      .pipe(share());
   }
   private observeGroups(): Observable<Group[]> {
     return this.groupService.listUserGroups({ user: this.user }).pipe(share());

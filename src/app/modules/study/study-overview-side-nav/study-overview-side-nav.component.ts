@@ -1,14 +1,14 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
-  selector: 'app-study-card',
+  selector: 'app-study-overview-side-nav',
   template: `
-    <p>study-card works!</p>
+    <p>study-overview-side-nav works!</p>
   `,
   styles: [],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class StudyCardComponent implements OnInit {
+export class StudyOverviewSideNavComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {}

@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SkipButtonComponent } from './skip-button.component';
+import { StudyReviewComponent } from './study-review.component';
 
-describe('SkipButtonComponent', () => {
-  let component: SkipButtonComponent;
-  let fixture: ComponentFixture<SkipButtonComponent>;
+describe('StudyReviewComponent', () => {
+  let component: StudyReviewComponent;
+  let fixture: ComponentFixture<StudyReviewComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [SkipButtonComponent]
+      declarations: [StudyReviewComponent]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SkipButtonComponent);
+    fixture = TestBed.createComponent(StudyReviewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

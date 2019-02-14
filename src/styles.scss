@@ -13,7 +13,12 @@
   margin: 16px;
 }
 
+// gotta be a better way todo this
 .no-margin {
+  margin: 0;
+}
+
+.no-margin.mat-display-1 {
   margin: 0;
 }
 
@@ -43,6 +48,10 @@ mat-sidenav {
 .bottom {
   position: absolute;
   bottom: 0;
+}
+
+.center-text {
+  text-align: center;
 }
 
 mat-icon.center-icon {

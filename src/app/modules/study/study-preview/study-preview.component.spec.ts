@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DeckStudySideNavComponent } from './deck-study-side-nav.component';
+import { StudyPreviewComponent } from './study-preview.component';
 
-describe('DeckStudySideNavComponent', () => {
-  let component: DeckStudySideNavComponent;
-  let fixture: ComponentFixture<DeckStudySideNavComponent>;
+describe('StudyPreviewComponent', () => {
+  let component: StudyPreviewComponent;
+  let fixture: ComponentFixture<StudyPreviewComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [DeckStudySideNavComponent]
+      declarations: [StudyPreviewComponent]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DeckStudySideNavComponent);
+    fixture = TestBed.createComponent(StudyPreviewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

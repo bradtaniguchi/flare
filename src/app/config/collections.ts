@@ -3,5 +3,6 @@ export enum Collections {
   Decks = 'decks',
   Groups = 'groups',
   Users = 'users',
+  Sessions = 'sessions',
   Permissions = 'permissions'
 }
