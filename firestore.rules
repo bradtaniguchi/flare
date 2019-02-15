@@ -1,0 +1,45 @@
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function hasAuth() {
+      return request.auth.uid != null
+    }
+  	match /users/{uid} {
+    	allow create: if request.auth != null && request.auth.uid == uid
+    }
+    match /cards/{uid} {
+      allow read: if auth()
+      // TODO
+      allow create: if auth()
+      allow delete: if false
+      allow update: if false
+    }
+    match /decks/{uid} {
+      allow read: if auth()
+      // TODO
+      allow create: if auth()
+      allow delete: if false
+      allow update: if false
+    }
+    match /groups/{uid} {
+      allow read: if auth()
+      // TODO
+      allow create: if auth()
+      allow delete: if false
+      allow update: if false
+    }
+    match /permissions/{uid} {
+      allow read: if auth()
+      // TODO
+      allow create: if auth()
+      allow delete: if false
+      allow update: if false
+    }
+    match /sessions/{uid} {
+      allow read: if auth()
+      // TODO
+      allow create: if auth()
+      allow delete: if false
+      allow update: if false
+    }
+  }
+}
