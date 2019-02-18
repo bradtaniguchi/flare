@@ -45,6 +45,8 @@ Thumbs.db
 # angular
 .angulardoc.json
 
+# firebase stuff
+.firebase
 
 # project environment variables
 .env

@@ -44,7 +44,12 @@ This application uses firebase, as such you will need the [firebase-cli](https:/
 
 **note** the build process will be changed in the future to make a single npm script to build+deploy.
 
+## Firebase Functions (Cloud Functions)
+
+Currently this application supports the development of cloud functions, but these are not
+deployed when deploying. This feature is not used, and as such we don't run the deployment
+of these functions yet.
 
 ## Testing
 
-You can run unit-tests using `npm run test`. Most tests will be built in the future. 
+You can run unit-tests using `npm run test`. Most tests will be built in the future.

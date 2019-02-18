@@ -7,6 +7,7 @@
     "dev": "npm run config && ng serve",
     "build": "npm run config && ng build",
     "build:prod": "npm run config && ng build -c=production",
+    "deploy": "npm run clean && npm run build:prod && firebase deploy",
     "test": "ng test",
     "smoke": "ts-node scripts/smoke-server",
     "lint": "ng lint",
@@ -14,7 +15,7 @@
     "precommit": "pretty-quick --staged",
     "config": "ts-node scripts/set-env.ts",
     "bundle-report": "webpack-bundle-analyzer dist/flare/stats.json",
-    "clean": "npx rimraf src/app/config.ts"
+    "clean": "npx rimraf dist"
   },
   "private": true,
   "dependencies": {
