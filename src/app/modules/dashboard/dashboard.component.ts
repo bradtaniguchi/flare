@@ -62,7 +62,12 @@ import { User } from 'src/app/models/user';
 
       <!-- second column-->
       <section fxFlex="50" class="margin">
-        <mat-card> <app-dashboard-actions></app-dashboard-actions> </mat-card>
+        <div class="margin-top-bottom">
+          <app-dashboard-actions></app-dashboard-actions>
+        </div>
+        <div class="margin-top-bottom">
+          <app-dashboard-study-actions> </app-dashboard-study-actions>
+        </div>
       </section>
     </div>
   `,
