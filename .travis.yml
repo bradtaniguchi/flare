@@ -9,6 +9,7 @@ node_js:
 branches:
   only:
     - master
+    - deploy-test
 addons:
   apt:
     sources:
@@ -26,10 +27,11 @@ before_script:
   - npm install -g @angular/cli
 
 script:
+  - npm run deploy
   # - npm run test:ci
 
-after_success:
-  - npm run deploy
+# after_success:
+#   - npm run deploy
 
 notifications:
   email:
