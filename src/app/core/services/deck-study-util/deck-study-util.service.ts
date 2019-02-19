@@ -19,16 +19,9 @@ export class DeckStudyUtilService {
     if (cards.length === 0) {
       return undefined;
     }
-    const cardsReviewed = [...missed, ...skipped, ...correct];
-    if (cardsReviewed.length === cards.length) {
-      return undefined;
-    }
-    const cardsToStudy = cards.filter(
-      card => !cardsReviewed.includes(card.uid)
-    );
-    const random = this.getRandom(cards.length);
-    logger.log('test: ', { cardsReviewed, previous, cards, cardsToStudy });
-    return cardsToStudy[random];
+    const cardsToStudy = cards.filter(card => !previous.includes(card.uid));
+    const randomIndex = this.getRandom(cardsToStudy.length);
+    return cardsToStudy[randomIndex];
   }
 
   private getRandom(max: number): number {
