@@ -1,11 +1,8 @@
-#.travis.yml
 sudo: required
 dist: trusty
-
 language: node_js
 node_js:
-  - '8.9.4'
-
+  - 8.9.4
 branches:
   only:
     - master
@@ -21,19 +18,15 @@ before_install:
   - export CHROME_BIN=chromium-browser
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
-
 before_script:
   - npm install -g firebase-tools
   - npm install -g @angular/cli
-
 script:
   - npm run deploy
-  # - npm run test:ci
-
-# after_success:
-#   - npm run deploy
-
 notifications:
   email:
     on_failure: change
     on_success: change
+env:
+  global:
+    secure: fwCcNF+eyWRbU/3qKL+fEbZi/p05EHhAy7IlSOTh67M4eEIHe6t1pPWKWmR26WJwy1irwulmE4r5+x3ibH7hYOapoq+jT3l3KfHN7SeCPq3FYJHDoBag9yDECPAofk7u9NLIJf3+4ZenzTQZLo5aC48g4jv5RIo7Ll8OLPQXTkk9dDxouLmlKsLDuL+8MQ6qSKEvAJCwuFrb3YCbzcNTyTVNXuIUKhRd0N4ObZzytkLhpO1d1ZoDxp7IwUey3YAl9gojywPcY9JYigS6kUrX7gzSbZ6cXoHxdLZSN6wNh8vouSGd3WI7P5+M7lqZg/rC6uD6EPKjK4g/bV7f/few9Q1XGRrNxgZbEbQcHtvBxS66cFo3AyfMRK5WWRsB4gyIHoeavPE55RHzbS0VZXjMq64Q9hXcKXYKAb9BKDy+CadwMvwRBWMgG4Mq5TMI5Vr4qZjG59E2itfugmpnSYRYU0uStYG7wGulQS1OouRLcd+gWfCQgNT9ocgmUM8uSJAMuryGlnW4mYgz/Rr2a9V1SAKklTufJIh8svgWMLlUpzDg2vCaG8eVZ8RkWTi/zEYAjQbOtz05dx5QUBErwd9pU5kacgqu09SBSMH9nNWNyJvYvnJrmY3FzKwc/Ih81CKjmiaJgcycShw4wkHqwn2iotcBIIXZWY+me4atqmlV6C0=
