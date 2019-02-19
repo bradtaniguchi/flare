@@ -4,40 +4,40 @@ service cloud.firestore {
       return request.auth.uid != null
     }
   	match /users/{uid} {
-    	allow create: if request.auth != null && request.auth.uid == uid
+    	allow create, update: if request.auth != null && request.auth.uid == uid
     }
     match /cards/{uid} {
-      allow read: if auth()
+      allow read: if hasAuth()
       // TODO
-      allow create: if auth()
+      allow create: if hasAuth()
       allow delete: if false
       allow update: if false
     }
     match /decks/{uid} {
-      allow read: if auth()
+      allow read: if hasAuth()
       // TODO
-      allow create: if auth()
+      allow create: if hasAuth()
       allow delete: if false
       allow update: if false
     }
     match /groups/{uid} {
-      allow read: if auth()
+      allow read: if hasAuth()
       // TODO
-      allow create: if auth()
+      allow create: if hasAuth()
       allow delete: if false
       allow update: if false
     }
     match /permissions/{uid} {
-      allow read: if auth()
+      allow read: if hasAuth()
       // TODO
-      allow create: if auth()
+      allow create: if hasAuth()
       allow delete: if false
       allow update: if false
     }
     match /sessions/{uid} {
-      allow read: if auth()
+      allow read: if hasAuth()
       // TODO
-      allow create: if auth()
+      allow create: if hasAuth()
       allow delete: if false
       allow update: if false
     }

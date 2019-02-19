@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DashboardActionsComponent } from './dashboard-actions.component';
-import { MatButtonModule } from '@angular/material';
+import { MatButtonModule, MatCardModule } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { RouterModule } from '@angular/router';
 
@@ -12,7 +12,8 @@ import { RouterModule } from '@angular/router';
     RouterModule,
     // angular material
     FlexLayoutModule,
-    MatButtonModule
+    MatButtonModule,
+    MatCardModule
   ],
   exports: [DashboardActionsComponent]
 })

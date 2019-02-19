@@ -11,6 +11,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { SpinnerModule } from 'src/app/shared/spinner/spinner.module';
 import { DashboardGroupModule } from './dashboard-group/dashboard-group.module';
 import { FormSectionHeaderModule } from 'src/app/shared/form-section-header/form-section-header.module';
+import { DashboardStudyActionsModule } from './dashboard-study-actions/dashboard-study-actions.module';
 
 @NgModule({
   declarations: [DashboardComponent],
@@ -22,6 +23,7 @@ import { FormSectionHeaderModule } from 'src/app/shared/form-section-header/form
     DashboardCardModule,
     DashboardActionsModule,
     DashboardGroupModule,
+    DashboardStudyActionsModule,
     // app modules
     SpinnerModule,
     FormSectionHeaderModule,
