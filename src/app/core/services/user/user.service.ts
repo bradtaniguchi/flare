@@ -7,6 +7,7 @@ import { Deck } from 'src/app/models/deck';
 import { Group } from 'src/app/models/group';
 import { User } from 'src/app/models/user';
 import { GenericDbService } from '../generic-db/generic-db.service';
+import { logger } from '../../logger';
 
 @Injectable({
   providedIn: 'root'
@@ -70,6 +71,7 @@ export class UserService extends GenericDbService {
    * @param user the user we are to create within our database
    */
   private writeDefaults(user: firebase.User): Observable<void[]> {
+    logger.log('writing defaults, as user is new');
     return combineLatest([
       this.db
         .collection(Collections.Users)

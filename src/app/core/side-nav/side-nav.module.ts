@@ -7,9 +7,10 @@ import {
 } from '@angular/material';
 import { RouterModule } from '@angular/router';
 import { SideNavComponent } from './side-nav.component';
+import { IsActivePipe } from './is-active.pipe';
 
 @NgModule({
-  declarations: [SideNavComponent],
+  declarations: [SideNavComponent, IsActivePipe],
   imports: [
     CommonModule,
     // angular

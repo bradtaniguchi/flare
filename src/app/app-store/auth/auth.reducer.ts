@@ -8,12 +8,12 @@ export function AuthReducer(
   switch (action.type) {
     case AuthActionTypes.LoginSuccess:
     case AuthActionTypes.StateChange:
-      return { user: action.payload };
+      return { ...state, user: action.payload };
     case AuthActionTypes.RegisterSuccess:
-      return { newRegister: true };
-    default:
-      return state;
+      return { ...state, newRegister: true };
     case AuthActionTypes.Logout:
       return {};
+    default:
+      return state;
   }
 }
