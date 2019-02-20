@@ -42,10 +42,9 @@ const routes: Routes = [
         pathMatch: 'full'
       },
       {
+        // TODO: remove later
         path: 'decks/study',
-        // loadChildren: './modules/deck-study/deck-study.module#DeckStudyModule'
         redirectTo: 'study'
-        // pathMatch: 'full'
       },
       {
         path: 'study',
@@ -65,6 +64,11 @@ const routes: Routes = [
       {
         path: 'dashboard',
         loadChildren: './modules/dashboard/dashboard.module#DashboardModule',
+        pathMatch: 'full'
+      },
+      {
+        path: 'settings',
+        loadChildren: './modules/settings/settings.module#SettingsModule',
         pathMatch: 'full'
       },
       {
