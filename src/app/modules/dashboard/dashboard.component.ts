@@ -62,11 +62,18 @@ import { User } from 'src/app/models/user';
 
       <!-- second column-->
       <section fxFlex="50" class="margin">
-        <div class="margin-top-bottom">
-          <app-dashboard-actions></app-dashboard-actions>
-        </div>
-        <div class="margin-top-bottom">
-          <app-dashboard-study-actions> </app-dashboard-study-actions>
+        <div>
+          <app-form-section-header
+            header="Study"
+            description="Below are actions that can be taken to get started"
+          >
+          </app-form-section-header>
+          <div class="margin-top-bottom">
+            <app-dashboard-actions></app-dashboard-actions>
+          </div>
+          <div class="margin-top-bottom">
+            <app-dashboard-study-actions> </app-dashboard-study-actions>
+          </div>
         </div>
       </section>
     </div>

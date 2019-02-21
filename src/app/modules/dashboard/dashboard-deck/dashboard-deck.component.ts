@@ -36,10 +36,11 @@ import { Deck } from 'src/app/models/deck';
               color="primary"
               (click)="study.emit(deck); $event.stopPropagation()"
             >
-              Study
+              <mat-icon>assessment</mat-icon> Study
             </button>
             <button
               type="button"
+              *ngIf="canEdit"
               mat-button
               (click)="edit.emit(deck); $event.stopPropagation()"
             >
@@ -76,6 +77,7 @@ export class DashboardDeckComponent implements OnInit {
   @Output() study = new EventEmitter();
   // TODO change later
   public canDelete = true;
+  public canEdit = true;
   constructor() {}
 
   ngOnInit() {}
