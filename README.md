@@ -34,10 +34,6 @@ and scrolling down to the **Add Firebase to your web app** Without adding this f
 
 After this is setup, you can run the project with just `npm run dev`
 
-## Contributing
-
-TBD...
-
 ## Deployment
 
 This application uses firebase, as such you will need the [firebase-cli](https://github.com/firebase/firebase-tools). Once you have installed the CLI, you needd to configure your own project from the [firebase console](https://console.firebase.google.com/u/0/). Finally, add your environment keys (see above) to the app, build your project using `npm run build`, and then run `firebase deploy` within the `dist` folder built.
