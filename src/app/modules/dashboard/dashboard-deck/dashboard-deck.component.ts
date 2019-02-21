@@ -14,7 +14,7 @@ import { Deck } from 'src/app/models/deck';
     <div matRipple class="margin-top-bottom">
       <mat-card class="clickable" (click)="study.emit(deck)">
         <mat-card-header>
-          <mat-icon mat-card-avatar class="center-icon">library_books</mat-icon>
+          <mat-icon mat-card-avatar class="center-icon icon">style</mat-icon>
           <mat-card-title> {{ deck.name }} </mat-card-title>
           <mat-card-subtitle>
             # of cards: {{ tempCardCount() }}

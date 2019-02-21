@@ -1,7 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DashboardGroupComponent } from './dashboard-group.component';
-import { MatCardModule, MatButtonModule } from '@angular/material';
+import {
+  MatCardModule,
+  MatButtonModule,
+  MatIconModule
+} from '@angular/material';
 
 @NgModule({
   declarations: [DashboardGroupComponent],
@@ -9,7 +13,8 @@ import { MatCardModule, MatButtonModule } from '@angular/material';
     CommonModule,
     // angular material
     MatCardModule,
-    MatButtonModule
+    MatButtonModule,
+    MatIconModule
   ],
   exports: [DashboardGroupComponent]
 })

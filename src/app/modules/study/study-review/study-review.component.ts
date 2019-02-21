@@ -14,7 +14,7 @@ import { Notify } from 'src/app/app-store/notify/notify.actions';
     <div class="view-container-padding">
       <mat-card>
         <mat-card-header>
-          <mat-icon mat-card-avatar class="center-icon"> score </mat-icon>
+          <mat-icon mat-card-avatar class="center-icon icon"> score </mat-icon>
           <mat-card-title>Study Result</mat-card-title>
           <mat-card-subtitle>
             Results for deck {{ deckName$ | async }}

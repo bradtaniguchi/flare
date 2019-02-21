@@ -21,8 +21,8 @@ import { SelectCard } from 'src/app/app-store/deck-study/deck-study.actions';
           <div matRipple class="margin-top-bottom">
             <mat-card class="clickable" (click)="start()">
               <mat-card-header>
-                <mat-icon mat-card-avatar class="center-icon"
-                  >library_books</mat-icon
+                <mat-icon mat-card-avatar class="center-icon icon"
+                  >style</mat-icon
                 >
                 <mat-card-title> {{ deck.name }} </mat-card-title>
                 <mat-card-subtitle>

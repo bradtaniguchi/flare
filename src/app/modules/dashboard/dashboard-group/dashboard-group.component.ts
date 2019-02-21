@@ -12,7 +12,10 @@ import { Group } from 'src/app/models/group';
   selector: 'app-dashboard-group',
   template: `
     <mat-card class="margin-top-bottom">
-      <mat-card-title> {{ group.name }} </mat-card-title>
+      <mat-card-header>
+        <mat-icon mat-card-avatar class="center-icon icon"> group </mat-icon>
+        <mat-card-title> {{ group.name }} </mat-card-title>
+      </mat-card-header>
       <mat-card-content>
         <p>{{ group.description }}</p>
         <p>Decks: {{ group.deckCount || 0 }}</p>
