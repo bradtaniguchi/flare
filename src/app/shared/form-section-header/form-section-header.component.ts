@@ -9,7 +9,7 @@ import {
   selector: 'app-form-section-header',
   template: `
     <div fxLayout="row" fxLayoutAlign="start center">
-      <span class="mat-title no-margin" style="margin: 0">{{ header }}</span>
+      <div class="mat-title no-margin" style="margin: 0">{{ header }}</div>
       <span *ngIf="!!description" class="margin-left-right"> - </span>
       <span class="mat-body-1" style="margin-left: 4px">
         {{ description }}

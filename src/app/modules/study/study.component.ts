@@ -1,30 +1,39 @@
 import {
-  Component,
-  OnInit,
   ChangeDetectionStrategy,
-  OnDestroy
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild
 } from '@angular/core';
+import { MatDrawer } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
-import { DeckService } from 'src/app/core/services/deck/deck.service';
-import { CardService } from 'src/app/core/services/card/card.service';
-import { Subject, Observable, of, combineLatest } from 'rxjs';
-import { map, switchMap, share, takeUntil, take } from 'rxjs/operators';
-import { User } from 'src/app/models/user';
-import { Deck } from 'src/app/models/deck';
-import { Card } from 'src/app/models/card';
+import { select, Store } from '@ngrx/store';
+import { combineLatest, Observable, of, Subject } from 'rxjs';
+import { map, switchMap, take, takeUntil } from 'rxjs/operators';
 import { AppState } from 'src/app/app-store/app-state';
-import { Store } from '@ngrx/store';
 import { InitDeckStudy } from 'src/app/app-store/deck-study/deck-study.actions';
+import { CardService } from 'src/app/core/services/card/card.service';
+import { DeckService } from 'src/app/core/services/deck/deck.service';
+import { Card } from 'src/app/models/card';
+import { Deck } from 'src/app/models/deck';
+import { User } from 'src/app/models/user';
 
 @Component({
   selector: 'app-study',
   template: `
-    <router-outlet></router-outlet>
+    <mat-drawer-container>
+      <mat-drawer #drawer [opened]="sidenavOpened$ | async">
+        <app-study-overview-side-nav></app-study-overview-side-nav>
+      </mat-drawer>
+      <mat-drawer-content> <router-outlet></router-outlet> </mat-drawer-content>
+    </mat-drawer-container>
   `,
   styles: [],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StudyComponent implements OnInit, OnDestroy {
+  @ViewChild('drawer') drawer: MatDrawer;
+  public sidenavOpened$: Observable<boolean>;
   private deckId$: Observable<string>;
   private deck$: Observable<Deck>;
   private cards$: Observable<Card[]>;
@@ -50,6 +59,10 @@ export class StudyComponent implements OnInit, OnDestroy {
       .subscribe(([deck, cards]) =>
         this.store.dispatch(new InitDeckStudy({ deck, cards }))
       );
+    this.sidenavOpened$ = this.store.pipe(
+      select(state => state.deckStudy.sidenavOpened),
+      map(sidenavOpened => !!sidenavOpened)
+    );
   }
 
   ngOnDestroy() {

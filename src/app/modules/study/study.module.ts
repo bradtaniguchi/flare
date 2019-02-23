@@ -9,6 +9,7 @@ import { StudyPreviewModule } from './study-preview/study-preview.module';
 import { StudyReviewModule } from './study-review/study-review.module';
 import { StoreModule } from '@ngrx/store';
 import { DeckStudyReducer } from 'src/app/app-store/deck-study/deck-study.reducer';
+import { MatSidenavModule } from '@angular/material';
 @NgModule({
   declarations: [StudyComponent],
   imports: [
@@ -19,7 +20,9 @@ import { DeckStudyReducer } from 'src/app/app-store/deck-study/deck-study.reduce
     StudyCardModule,
     StudyOverviewSideNavModule,
     StudyPreviewModule,
-    StudyReviewModule
+    StudyReviewModule,
+    // angular
+    MatSidenavModule
   ]
 })
 export class StudyModule {}

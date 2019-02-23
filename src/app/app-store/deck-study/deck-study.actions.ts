@@ -14,7 +14,10 @@ export enum DeckStudyActionTypes {
   // card related actions
   SKIP = '[DeckStudy] SKIP',
   CORRECT = '[DeckStudy] CORRECT',
-  INCORRECT = '[DeckStudy] MISSED'
+  INCORRECT = '[DeckStudy] MISSED',
+
+  // sidenav
+  UPDATE_SIDE_NAV = '[DeckStudy] UPDATE_SIDE_NAV'
 }
 
 export type DeckStudyActions =
@@ -24,7 +27,8 @@ export type DeckStudyActions =
   | FlipCard
   | SkipCard
   | GotCardIncorrect
-  | GotCardCorrect;
+  | GotCardCorrect
+  | UpdateDeckStudySidenav;
 
 export class InitDeckStudy implements Action {
   readonly type = DeckStudyActionTypes.INIT;
@@ -62,4 +66,10 @@ export class GotCardIncorrect implements Action {
 export class GotCardCorrect implements Action {
   readonly type = DeckStudyActionTypes.CORRECT;
   constructor(public payload?: string) {}
+}
+
+// to update the state
+export class UpdateDeckStudySidenav implements Action {
+  readonly type = DeckStudyActionTypes.UPDATE_SIDE_NAV;
+  constructor(public opened: boolean) {}
 }

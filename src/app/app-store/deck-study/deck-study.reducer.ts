@@ -40,6 +40,11 @@ export interface DeckStudyState {
    * The cards marked as skipped
    */
   skipped: string[];
+
+  /**
+   * If the deckStudy overview sidenav is open or not
+   */
+  sidenavOpened?: boolean;
 }
 
 export function DeckStudyReducer(

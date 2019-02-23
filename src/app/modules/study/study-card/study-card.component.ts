@@ -9,7 +9,8 @@ import {
   FlipCard,
   GotCardIncorrect,
   GotCardCorrect,
-  SelectCard
+  SelectCard,
+  UpdateDeckStudySidenav
 } from 'src/app/app-store/deck-study/deck-study.actions';
 import { logger } from 'src/app/core/logger';
 import { Card } from 'src/app/models/card';
@@ -23,8 +24,8 @@ import { DeckStudyUtilService } from 'src/app/core/services/deck-study-util/deck
         <div class="full-height">
           <!-- container for text-->
           <mat-menu #overviewMenu>
-            <button mat-menu-item (click)="showOverview()">overview</button>
-            <button mat-menu-item (click)="exit()">exit</button>
+            <button mat-menu-item (click)="showOverview()">Overview</button>
+            <button mat-menu-item (click)="exit()">Exit</button>
           </mat-menu>
           <ng-template #showFront>
             <div fxLayout="row">
@@ -195,9 +196,11 @@ export class StudyCardComponent implements OnInit {
 
   showOverview() {
     logger.log('showing overview');
+    this.store.dispatch(new UpdateDeckStudySidenav(true));
   }
   exit() {
     logger.log('clicked exit');
+    this.router.navigate(['/'], { relativeTo: this.route });
   }
   skip(card: Card) {
     logger.log('clicked skip');
