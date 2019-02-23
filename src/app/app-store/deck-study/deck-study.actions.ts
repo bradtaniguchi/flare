@@ -71,5 +71,5 @@ export class GotCardCorrect implements Action {
 // to update the state
 export class UpdateDeckStudySidenav implements Action {
   readonly type = DeckStudyActionTypes.UPDATE_SIDE_NAV;
-  constructor(public opened: boolean) {}
+  constructor(public payload: boolean) {}
 }

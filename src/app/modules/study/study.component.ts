@@ -9,7 +9,7 @@ import { MatDrawer } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
-import { map, switchMap, take, takeUntil } from 'rxjs/operators';
+import { map, switchMap, take, takeUntil, tap, mapTo } from 'rxjs/operators';
 import { AppState } from 'src/app/app-store/app-state';
 import { InitDeckStudy } from 'src/app/app-store/deck-study/deck-study.actions';
 import { CardService } from 'src/app/core/services/card/card.service';
@@ -17,12 +17,20 @@ import { DeckService } from 'src/app/core/services/deck/deck.service';
 import { Card } from 'src/app/models/card';
 import { Deck } from 'src/app/models/deck';
 import { User } from 'src/app/models/user';
+import { MediaObserver } from '@angular/flex-layout';
+import { logger } from 'src/app/core/logger';
 
+type SidenavMode = 'over' | 'push' | 'side';
 @Component({
   selector: 'app-study',
   template: `
-    <mat-drawer-container>
-      <mat-drawer #drawer [opened]="sidenavOpened$ | async">
+    <mat-drawer-container class="full-height">
+      <mat-drawer
+        style="width: 30vw"
+        #drawer
+        [opened]="sidenavOpened$ | async"
+        [mode]="sidenavMode$ | async"
+      >
         <app-study-overview-side-nav></app-study-overview-side-nav>
       </mat-drawer>
       <mat-drawer-content> <router-outlet></router-outlet> </mat-drawer-content>
@@ -34,6 +42,7 @@ import { User } from 'src/app/models/user';
 export class StudyComponent implements OnInit, OnDestroy {
   @ViewChild('drawer') drawer: MatDrawer;
   public sidenavOpened$: Observable<boolean>;
+  public sidenavMode$: Observable<SidenavMode>;
   private deckId$: Observable<string>;
   private deck$: Observable<Deck>;
   private cards$: Observable<Card[]>;
@@ -42,6 +51,7 @@ export class StudyComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private store: Store<AppState>,
+    private media: MediaObserver,
     private deckService: DeckService,
     private cardService: CardService
   ) {}
@@ -51,6 +61,7 @@ export class StudyComponent implements OnInit, OnDestroy {
     this.deckId$ = this.route.params.pipe(map(params => params.deckId));
     this.deck$ = this.observeDeck();
     this.cards$ = this.observeCards();
+    this.sidenavMode$ = this.observeSidenavMode();
     combineLatest(this.deck$, this.cards$)
       .pipe(
         take(1),
@@ -68,6 +79,13 @@ export class StudyComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.takeUntil.next();
     this.takeUntil.unsubscribe();
+  }
+
+  private observeSidenavMode(): Observable<SidenavMode> {
+    return this.media.media$.pipe(
+      tap(val => logger.log('test ', val)),
+      mapTo('side' as SidenavMode)
+    );
   }
 
   private observeDeck(): Observable<Deck> {

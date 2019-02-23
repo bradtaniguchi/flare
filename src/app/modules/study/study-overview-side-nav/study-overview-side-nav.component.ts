@@ -5,6 +5,7 @@ import { Deck } from 'src/app/models/deck';
 import { Store, select } from '@ngrx/store';
 import { AppState } from 'src/app/app-store/app-state';
 import { map } from 'rxjs/operators';
+import { UpdateDeckStudySidenav } from 'src/app/app-store/deck-study/deck-study.actions';
 
 @Component({
   selector: 'app-study-overview-side-nav',
@@ -12,7 +13,7 @@ import { map } from 'rxjs/operators';
     <div class="main-view-container">
       <div fxLayout="row" fxLayoutAlign="end center">
         <div>TIME</div>
-        <button mat-icon-button aria-label="close">
+        <button mat-icon-button aria-label="close" (click)="close()">
           <mat-icon>close</mat-icon>
         </button>
       </div>
@@ -53,5 +54,9 @@ export class StudyOverviewSideNavComponent implements OnInit {
         )
       )
     );
+  }
+
+  close() {
+    this.store.dispatch(new UpdateDeckStudySidenav(false));
   }
 }

@@ -115,6 +115,11 @@ export function DeckStudyReducer(
         previous: [...state.previous, action.payload],
         skipped: [...state.missed, action.payload || state.card]
       };
+    case DeckStudyActionTypes.UPDATE_SIDE_NAV:
+      return {
+        ...state,
+        sidenavOpened: action.payload
+      };
     default:
       return state;
   }
