@@ -21,19 +21,50 @@ import { DeckStudyUtilService } from 'src/app/core/services/deck-study-util/deck
     <div class="view-container-padding">
       <ng-container *ngIf="(card$ | async) as card; else noCard">
         <div class="full-height">
+          <!-- container for text-->
+          <mat-menu #overviewMenu>
+            <button mat-menu-item (click)="showOverview()">overview</button>
+            <button mat-menu-item (click)="exit()">exit</button>
+          </mat-menu>
           <ng-template #showFront>
-            <app-form-section-header
-              header="Front"
-              [description]="cardDescription$ | async"
-            ></app-form-section-header>
-            <p class="mat-body-2">{{ card.front }}</p>
+            <div fxLayout="row">
+              <button
+                mat-icon-button
+                aria-label="Study Overview"
+                [matMenuTriggerFor]="overviewMenu"
+              >
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <app-form-section-header
+                header="Front"
+                [description]="cardDescription$ | async"
+              ></app-form-section-header>
+            </div>
+            <app-slim-card
+              fxLayout="column"
+              fxLayoutAlign="center center"
+              class="margin-top-bottom"
+            >
+              <p class="mat-body-2">{{ card.front }}</p>
+            </app-slim-card>
           </ng-template>
           <ng-container *ngIf="(flipped$ | async); else showFront">
-            <app-form-section-header
-              header="Back"
-              [description]="cardDescription$ | async"
-            ></app-form-section-header>
-            <p class="mat-body-2">{{ card.back }}</p>
+            <div fxLayout="row">
+              <button mat-icon-button aria-label="Study Overview">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <app-form-section-header
+                header="Back"
+                [description]="cardDescription$ | async"
+              ></app-form-section-header>
+            </div>
+            <app-slim-card
+              fxLayout="column"
+              fxLayoutAlign="center center"
+              class="margin-top-bottom"
+            >
+              <p class="mat-body-2">{{ card.back }}</p>
+            </app-slim-card>
           </ng-container>
           <ng-template #showFrontBtns>
             <div fxLayout="row" fxLayoutGap="8px">
@@ -85,6 +116,7 @@ import { DeckStudyUtilService } from 'src/app/core/services/deck-study-util/deck
             </div>
           </ng-container>
         </div>
+        <!-- container -->
       </ng-container>
       <ng-template #noCard>
         <div class="mat-display-1 no-margin center-text">
@@ -159,6 +191,13 @@ export class StudyCardComponent implements OnInit {
         )
       )
     );
+  }
+
+  showOverview() {
+    logger.log('showing overview');
+  }
+  exit() {
+    logger.log('clicked exit');
   }
   skip(card: Card) {
     logger.log('clicked skip');
