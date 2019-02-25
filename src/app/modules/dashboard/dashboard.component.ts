@@ -29,7 +29,12 @@ import { User } from 'src/app/models/user';
           <app-spinner-container [loading]="decksLoading$">
             <ng-container *ngIf="(decks$ | async) as decks">
               <ng-container *ngIf="!decks.length">
-                <p>No Decks, please create one by clicking on the right</p>
+                <app-slim-card>
+                  <p class="mat-body-1">
+                    No Decks, please create one by clicking
+                    <a routerLink="deck/create">here</a>
+                  </p>
+                </app-slim-card>
               </ng-container>
               <app-dashboard-deck
                 *ngFor="let deck of decks"
@@ -78,7 +83,13 @@ import { User } from 'src/app/models/user';
       </section>
     </div>
   `,
-  styles: [],
+  styles: [
+    `
+      a {
+        color: #0b00c0;
+      }
+    `
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardComponent implements OnInit {
@@ -128,7 +139,6 @@ export class DashboardComponent implements OnInit {
     logger.log('study deck called: ', deck);
     this.router.navigate(['/', 'decks', 'study', deck.uid]);
   }
-
   editDeck(deck: Deck) {
     logger.log('edit deck called: ', deck);
     this.router.navigate(['/', 'decks', 'edit', deck.uid]);
