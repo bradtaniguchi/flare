@@ -87,9 +87,10 @@ export class StudyReviewComponent implements OnInit {
       .pipe(
         select(state => state.deckStudy),
         withLatestFrom(this.store.select(state => state.auth.user)),
-        mergeMap(([{ correct, deck, missed, skipped }, user]) =>
+        mergeMap(([{ correct, deck, missed, skipped, startedOn }, user]) =>
           this.sessionService.create({
             correct,
+            startedOn,
             deck,
             missed,
             skipped,

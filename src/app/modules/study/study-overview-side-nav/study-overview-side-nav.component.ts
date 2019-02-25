@@ -11,17 +11,29 @@ import { UpdateDeckStudySidenav } from 'src/app/app-store/deck-study/deck-study.
   selector: 'app-study-overview-side-nav',
   template: `
     <div class="main-view-container">
-      <div fxLayout="row" fxLayoutAlign="end center">
-        <div>TIME</div>
+      <div fxLayout="row" fxLayoutAlign="space-between center">
+        <div class="mat-body-1">TIME</div>
         <button mat-icon-button aria-label="close" (click)="close()">
           <mat-icon>close</mat-icon>
         </button>
       </div>
       <mat-divider></mat-divider>
       <ng-container *ngIf="(sidenavOpened$ | async)">
-        <mat-nav-list class="main-view-container">
-          <ng-container *ngFor="let card of (previousCards$ | async)">
-            <div mat-list-item>{{ card.front }}</div>
+        <mat-nav-list class="main-view-container margin-left-right">
+          <h3 mat-subheader>Previous Cards</h3>
+          <ng-container *ngIf="(previousCards$ | async) as previousCards">
+            <ng-container *ngIf="previousCards.length === 0">
+              <app-slim-card mat-list-item class="margin-top-bottom">
+                <p class="mat-body-1">No Cards Studied Yet</p>
+              </app-slim-card>
+            </ng-container>
+            <ng-container *ngFor="let card of previousCards">
+              <app-slim-card mat-list-item class="margin-top-bottom">
+                <div fxLayout="row">
+                  <p class="mat-body-1">{{ card.front }}</p>
+                </div>
+              </app-slim-card>
+            </ng-container>
           </ng-container>
         </mat-nav-list>
       </ng-container>

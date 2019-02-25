@@ -22,17 +22,19 @@ export class SessionService {
 
   public create(params: {
     deck: Deck;
+    startedOn: Date;
     correct: string[];
     missed: string[];
     skipped: string[];
     user: User;
   }): Observable<Session> {
-    const { deck, correct, missed, skipped, user } = params;
+    const { deck, startedOn, correct, missed, skipped, user } = params;
     const uid = this.db.createId();
     const session: Session = {
       correct,
       skipped,
       missed,
+      startedOn,
       deck: deck.uid,
       group: deck.group,
       createdBy: user.uid,

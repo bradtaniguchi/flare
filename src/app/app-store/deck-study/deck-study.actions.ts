@@ -6,6 +6,7 @@ export enum DeckStudyActionTypes {
   // main setup/tear down actions
   INIT = '[DeckStudy] INIT',
   CLEAR = '[DeckStudy] CLEAR',
+  START_TIMER = '[DeckStudy] START_TIMER',
 
   // select the card to study
   SELECT = '[DeckStudy] SELECT',
@@ -22,6 +23,7 @@ export enum DeckStudyActionTypes {
 
 export type DeckStudyActions =
   | InitDeckStudy
+  | StartDeckStudyTimer
   | ClearDeckStudy
   | SelectCard
   | FlipCard
@@ -40,6 +42,9 @@ export class InitDeckStudy implements Action {
   ) {}
 }
 
+export class StartDeckStudyTimer implements Action {
+  readonly type = DeckStudyActionTypes.START_TIMER;
+}
 export class ClearDeckStudy implements Action {
   readonly type = DeckStudyActionTypes.CLEAR;
 }

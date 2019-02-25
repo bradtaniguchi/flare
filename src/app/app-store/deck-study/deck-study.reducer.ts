@@ -20,6 +20,10 @@ export interface DeckStudyState {
    */
   flipped: boolean;
   /**
+   * Date started on
+   */
+  startedOn?: Date;
+  /**
    * List of cards we already went over, this is used to display
    * the cards within the display.
    */

@@ -6,6 +6,14 @@ import { GenericModel } from './generic-model';
  */
 export interface Session extends GenericModel {
   /**
+   * The time/date the session was started
+   */
+  startedOn: Date;
+  /**
+   * The time/date the session was finished
+   */
+  endedOn?: Date;
+  /**
    * list of cardIds missed
    */
   missed: string[];

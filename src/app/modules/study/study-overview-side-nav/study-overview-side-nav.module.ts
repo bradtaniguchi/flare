@@ -7,11 +7,13 @@ import {
   MatButtonModule,
   MatIconModule
 } from '@angular/material';
+import { SlimCardModule } from 'src/app/shared/slim-card/slim-card.module';
 
 @NgModule({
   declarations: [StudyOverviewSideNavComponent],
   imports: [
     CommonModule,
+    SlimCardModule,
     // angular material
     FlexLayoutModule,
     MatListModule,
