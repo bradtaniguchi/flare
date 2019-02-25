@@ -1,14 +1,24 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { combineLatest, from, Observable } from 'rxjs';
-import { map, mergeMap, tap } from 'rxjs/operators';
+import { map, mergeMap, mapTo } from 'rxjs/operators';
 import { Collections } from 'src/app/config/collections';
 import { Deck } from 'src/app/models/deck';
 import { Group } from 'src/app/models/group';
 import { User } from 'src/app/models/user';
-import { GenericDbService } from '../generic-db/generic-db.service';
 import { logger } from '../../logger';
+import { GenericDbService } from '../generic-db/generic-db.service';
+import { GroupPermission } from 'src/app/models/group-permission';
+import { RoleTypes } from 'src/app/config/roles';
 
+/**
+ * The createUserResponse interface represents
+ * what the user should be created as.
+ */
+export interface CreateUserResponse {
+  newUser: boolean;
+  user: firebase.User;
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -22,15 +32,15 @@ export class UserService extends GenericDbService {
    * Security should prevent user's from being created again.
    * @param user the user to create
    */
-  public create(user: firebase.User): Observable<any> {
+  public create(user: firebase.User): Observable<CreateUserResponse> {
     return this.db
       .collection(Collections.Users)
       .doc(user.uid)
       .get()
       .pipe(
-        map(_user => !!_user),
-        mergeMap<boolean, any>(hasUser =>
-          hasUser ? this.updateReturning(user) : this.writeDefaults(user)
+        map(document => document.exists),
+        mergeMap<boolean, any>(exists =>
+          exists ? this.updateReturning(user) : this.writeDefaults(user)
         )
       );
   }
@@ -47,10 +57,11 @@ export class UserService extends GenericDbService {
       .valueChanges();
   }
   /**
-   * Updates a returning user
+   * Updates a returning user, returns the user
    * @param user the user that is a returning user
    */
-  private updateReturning(user: firebase.User): Observable<void> {
+  private updateReturning(user: firebase.User): Observable<CreateUserResponse> {
+    logger.log('Updating returning user: ', user);
     return from(
       this.db
         .collection(Collections.Users)
@@ -63,6 +74,11 @@ export class UserService extends GenericDbService {
           photoURL: user.photoURL,
           lastLoggedInOn: new Date()
         } as User)
+    ).pipe(
+      mapTo({
+        newUser: false,
+        user
+      } as CreateUserResponse)
     );
   }
 
@@ -70,8 +86,9 @@ export class UserService extends GenericDbService {
    * Creates the "defaults" for a given user
    * @param user the user we are to create within our database
    */
-  private writeDefaults(user: firebase.User): Observable<void[]> {
+  private writeDefaults(user: firebase.User): Observable<CreateUserResponse> {
     logger.log('writing defaults, as user is new');
+    const createdOn = new Date();
     return combineLatest([
       this.db
         .collection(Collections.Users)
@@ -82,7 +99,7 @@ export class UserService extends GenericDbService {
           _displayName: user.displayName.toLowerCase(),
           email: user.email,
           photoURL: user.photoURL,
-          createdOn: new Date()
+          createdOn
         } as User),
       this.db
         .collection(Collections.Groups)
@@ -91,11 +108,18 @@ export class UserService extends GenericDbService {
           name: 'Your group',
           description: 'This is your private group',
           createdBy: user.uid,
-          createdOn: new Date(),
+          createdOn,
           private: true,
           default: true,
           uid: user.uid
         } as Group),
+      this.db.collection(Collections.Permissions).add({
+        createdBy: user.uid,
+        createdOn,
+        groupId: user.uid,
+        userId: user.uid,
+        type: RoleTypes.Admin
+      } as GroupPermission),
       this.db
         .collection(Collections.Decks)
         .doc(user.uid)
@@ -108,6 +132,11 @@ export class UserService extends GenericDbService {
           uid: user.uid,
           group: user.uid
         } as Deck)
-    ]);
+    ]).pipe(
+      mapTo({
+        newUser: true,
+        user
+      } as CreateUserResponse)
+    );
   }
 }

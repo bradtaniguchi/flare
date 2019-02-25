@@ -6,12 +6,14 @@ export function AuthReducer(
   action: AuthActions
 ): AuthState {
   switch (action.type) {
-    case AuthActionTypes.LoginSuccess:
-    case AuthActionTypes.StateChange:
+    case AuthActionTypes.LOGIN_SUCCESS:
+    case AuthActionTypes.STATE_CHANGE:
       return { ...state, user: action.payload };
-    case AuthActionTypes.RegisterSuccess:
+    case AuthActionTypes.REGISTER_SUCCESS:
       return { ...state, newRegister: true };
-    case AuthActionTypes.Logout:
+    case AuthActionTypes.ONLY_UPDATE_SUCCESS:
+      return { ...state, newRegister: false };
+    case AuthActionTypes.LOGOUT:
       return {};
     default:
       return state;

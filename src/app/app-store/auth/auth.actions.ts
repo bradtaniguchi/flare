@@ -2,19 +2,20 @@ import { Action } from '@ngrx/store';
 import { User } from 'src/app/models/user';
 
 export enum AuthActionTypes {
-  Login = '[Auth] Login',
-  LoginSuccess = '[Auth] LoginSuccess',
-  LoginFailed = '[Auth] LoginFailed',
+  LOGIN = '[Auth] LOGIN',
+  LOGIN_SUCCESS = '[Auth] LOGIN_SUCCESS',
+  LOGIN_FAILED = '[Auth] LOGIN_FAILED',
 
-  StateChange = '[Auth] StateChange',
-  Logout = '[Auth] Logout',
-  LogoutSuccess = '[Auth] LogoutSuccess',
-  LogoutFailed = '[Auth] LogoutFailed',
+  STATE_CHANGE = '[Auth] STATE_CHANGE',
+  LOGOUT = '[Auth] LOGOUT',
+  LOGOUT_SUCCESS = '[Auth] LOGOUT_SUCCESS',
+  LOGOUT_FAILED = '[Auth] LOGOUT_FAILED',
 
   // AuthRegistration
-  Register = '[Auth] Register',
-  RegisterSuccess = '[Auth] RegisterSuccess',
-  RegisterFailed = '[Auth] RegisterFailed'
+  REGISTER = '[Auth] REGISTER',
+  REGISTER_SUCCESS = '[Auth] REGISTER_SUCCESS',
+  ONLY_UPDATE_SUCCESS = '[Auth] ONLY_UPDATE_SUCCESS',
+  REGISTER_FAILED = '[Auth] REGISTER_FAILED'
 }
 
 export type AuthActions =
@@ -28,48 +29,53 @@ export type AuthActions =
   // AuthRegistration
   | AuthRegister
   | AuthRegisterSuccess
+  | AuthRegisterOnlyUpdateSuccess
   | AuthRegisterFailed;
 
 // LOGIN
 export class AuthLogin implements Action {
-  readonly type = AuthActionTypes.Login;
+  readonly type = AuthActionTypes.LOGIN;
   constructor(public payload: 'popup' | 'redirect') {}
 }
 export class AuthLoginSuccess implements Action {
-  readonly type = AuthActionTypes.LoginSuccess;
+  readonly type = AuthActionTypes.LOGIN_SUCCESS;
   constructor(public payload: User) {}
 }
 export class AuthLoginFailed implements Action {
-  readonly type = AuthActionTypes.LoginFailed;
+  readonly type = AuthActionTypes.LOGIN_FAILED;
   constructor(public payload: Error) {}
 }
 
 // STATE CHANGE
 export class AuthStateChange implements Action {
-  readonly type = AuthActionTypes.StateChange;
+  readonly type = AuthActionTypes.STATE_CHANGE;
   constructor(public payload: User) {}
 }
 // LOGOUT
 export class AuthLogout implements Action {
-  readonly type = AuthActionTypes.Logout;
+  readonly type = AuthActionTypes.LOGOUT;
 }
 export class AuthLogoutSuccess implements Action {
-  readonly type = AuthActionTypes.LogoutSuccess;
+  readonly type = AuthActionTypes.LOGOUT_SUCCESS;
 }
 export class AuthLogoutFailed implements Action {
-  readonly type = AuthActionTypes.LogoutFailed;
+  readonly type = AuthActionTypes.LOGOUT_FAILED;
 }
 
 // Auth Registration
 export class AuthRegister implements Action {
-  readonly type = AuthActionTypes.Register;
+  readonly type = AuthActionTypes.REGISTER;
   constructor(public payload: firebase.User) {}
 }
 
+// returned if we successfully registered the user
 export class AuthRegisterSuccess implements Action {
-  readonly type = AuthActionTypes.RegisterSuccess;
+  readonly type = AuthActionTypes.REGISTER_SUCCESS;
 }
 
+export class AuthRegisterOnlyUpdateSuccess implements Action {
+  readonly type = AuthActionTypes.ONLY_UPDATE_SUCCESS;
+}
 export class AuthRegisterFailed implements Action {
-  readonly type = AuthActionTypes.RegisterFailed;
+  readonly type = AuthActionTypes.REGISTER_FAILED;
 }
