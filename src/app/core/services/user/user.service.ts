@@ -111,7 +111,8 @@ export class UserService extends GenericDbService {
           createdOn,
           private: true,
           default: true,
-          uid: user.uid
+          uid: user.uid,
+          deckCount: 1
         } as Group),
       this.db.collection(Collections.Permissions).add({
         createdBy: user.uid,
