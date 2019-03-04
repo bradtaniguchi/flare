@@ -12,6 +12,7 @@ import { AppComponent } from './app.component';
 import { CONFIG } from './config';
 import { CoreModule } from './core/core.module';
 import { initAppFactory } from './init';
+import { ReactiveFormsModule } from '@angular/forms';
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -21,6 +22,7 @@ import { initAppFactory } from './init';
     // app modules
     AppStoreModule,
     CoreModule,
+    ReactiveFormsModule,
     // firebase
     AngularFireModule.initializeApp(CONFIG.firebase),
     AngularFireAuthModule,

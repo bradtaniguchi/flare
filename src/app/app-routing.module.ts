@@ -51,6 +51,10 @@ const routes: Routes = [
         loadChildren: './modules/study/study.module#StudyModule'
       },
       {
+        path: 'decks/edit',
+        loadChildren: './modules/deck-edit/deck-edit.module#DeckEditModule'
+      },
+      {
         path: 'groups/create',
         loadChildren:
           './modules/group-create/group-create.module#GroupCreateModule',

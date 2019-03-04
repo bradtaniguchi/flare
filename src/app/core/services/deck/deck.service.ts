@@ -6,7 +6,7 @@ import { Deck } from 'src/app/models/deck';
 import { User } from 'src/app/models/user';
 import { GenericDbService } from '../generic-db/generic-db.service';
 import { CreateDeckForm } from 'src/app/modules/deck-create/create-deck-form';
-import { map, mergeMap, tap } from 'rxjs/operators';
+import { map, mergeMap, tap, mapTo } from 'rxjs/operators';
 import { CardService } from '../card/card.service';
 import { CreateCardForm } from 'src/app/modules/card-create/create-card-form';
 
@@ -18,6 +18,14 @@ export class DeckService extends GenericDbService {
     super();
   }
 
+  public update(deck: Deck): Observable<Deck> {
+    return from(
+      this.db
+        .collection(Collections.Decks)
+        .doc(deck.uid)
+        .update(deck)
+    ).pipe(mapTo(deck));
+  }
   /**
    * Creates a new deck, and adds references to the related groups, cards
    * @param deck the deck to create
