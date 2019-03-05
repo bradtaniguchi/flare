@@ -14,10 +14,16 @@ import { FormSectionHeaderModule } from 'src/app/shared/form-section-header/form
 import { DashboardStudyActionsModule } from './dashboard-study-actions/dashboard-study-actions.module';
 import { SlimCardModule } from 'src/app/shared/slim-card/slim-card.module';
 import { RouterModule } from '@angular/router';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
+import { DashboardReducer } from 'src/app/app-store/dashboard/dashboard.reducer';
+import { DashboardEffects } from 'src/app/app-store/dashboard/dashboard.effects';
 
 @NgModule({
   declarations: [DashboardComponent],
   imports: [
+    StoreModule.forFeature('dashboard', DashboardReducer),
+    EffectsModule.forFeature([DashboardEffects]),
     CommonModule,
     RouterModule,
     DashboardRoutingModule,

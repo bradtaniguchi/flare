@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map, share, startWith, tap } from 'rxjs/operators';
 import { logger } from 'src/app/core/logger';
 import { DeckService } from 'src/app/core/services/deck/deck.service';
@@ -8,6 +8,8 @@ import { GroupService } from 'src/app/core/services/group/group.service';
 import { Deck } from 'src/app/models/deck';
 import { Group } from 'src/app/models/group';
 import { User } from 'src/app/models/user';
+import { Store, select } from '@ngrx/store';
+import { AppState } from 'src/app/app-store/app-state';
 
 @Component({
   selector: 'app-dashboard',
@@ -100,7 +102,7 @@ export class DashboardComponent implements OnInit {
 
   private user: User;
   constructor(
-    // private store: Store<AppState>,
+    private store: Store<AppState>,
     private deckService: DeckService,
     private groupService: GroupService,
     private route: ActivatedRoute,
@@ -111,10 +113,11 @@ export class DashboardComponent implements OnInit {
     // used resolve value from resolver
     this.user = this.route.snapshot.data.user;
     this.decks$ = this.observeDecks();
-    this.decksLoading$ = this.decks$.pipe(
-      map(decks => !decks),
-      startWith(true)
-    );
+    this.decksLoading$ = of(false);
+    // this.decksLoading$ = this.decks$.pipe(
+    //   map(decks => !decks),
+    //   startWith(true)
+    // );
 
     this.groups$ = this.observeGroups();
     this.groupsLoading$ = this.groups$.pipe(
@@ -124,15 +127,16 @@ export class DashboardComponent implements OnInit {
   }
 
   private observeDecks(): Observable<Deck[]> {
-    return this.deckService
-      .list({
-        user: this.user,
-        queryFn: ref => ref.where('createdBy', '==', this.user.uid)
-      })
-      .pipe(share());
+    return this.store.pipe(
+      select(state => state.dashboard.decks),
+      map(decks => Object.values(decks))
+    );
   }
   private observeGroups(): Observable<Group[]> {
-    return this.groupService.listUserGroups({ user: this.user }).pipe(share());
+    return this.store.pipe(
+      select(state => state.dashboard.groups),
+      map(groups => Object.values(groups))
+    );
   }
 
   studyDeck(deck: Deck) {
