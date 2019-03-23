@@ -1,10 +1,10 @@
 import { Location } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable, combineLatest } from 'rxjs';
-import { map, mergeMap, share, take, tap, shareReplay } from 'rxjs/operators';
+import { combineLatest, Observable } from 'rxjs';
+import { map, mergeMap, shareReplay, take } from 'rxjs/operators';
 import { AppState } from 'src/app/app-store/app-state';
 import { logger } from 'src/app/core/logger';
 import { DeckFormService } from 'src/app/core/services/deck-form/deck-form.service';

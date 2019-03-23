@@ -42,11 +42,6 @@ const routes: Routes = [
         pathMatch: 'full'
       },
       {
-        // TODO: remove later
-        path: 'decks/study',
-        redirectTo: 'study'
-      },
-      {
         path: 'study',
         loadChildren: './modules/study/study.module#StudyModule'
       },
@@ -57,6 +52,11 @@ const routes: Routes = [
       {
         path: 'groups',
         loadChildren: './modules/group-list/group-list.module#GroupListModule'
+      },
+      {
+        path: 'groups/edit',
+        loadChildren: './modules/group-edit/group-edit.module#GroupEditModule',
+        pathMatch: 'full'
       },
       {
         path: 'dashboard',
