@@ -19,11 +19,14 @@ export class UserEffects {
   @Effect()
   public search$ = this.actions$.pipe(
     ofType(UserActionTypes.Search),
-    switchMap((action: SearchUsers) => this.user.startSearch(action.payload)),
-    map((res: User[]) => new SearchUsersSuccess(res)),
-    catchError(err => {
-      logger.error(err);
-      return of(new SearchUserFailed());
-    })
+    switchMap((action: SearchUsers) =>
+      this.user.startSearch(action.payload).pipe(
+        map((res: User[]) => new SearchUsersSuccess(res)),
+        catchError(err => {
+          logger.error(err);
+          return of(new SearchUserFailed());
+        })
+      )
+    )
   );
 }

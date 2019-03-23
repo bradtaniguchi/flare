@@ -35,15 +35,18 @@ export class AuthEffects {
   @Effect()
   login$ = this.actions$.pipe(
     ofType(AuthActionTypes.LOGIN),
-    mergeMap(() => this.auth.googleAuthLoginPopup()),
-    mergeMap(userCredentials => [
-      new AuthRegister(userCredentials.user),
-      new AuthLoginSuccess(userCredentials.user)
-    ]),
-    catchError(err => {
-      logger.error(err);
-      return of(new AuthLoginFailed(err));
-    })
+    mergeMap(() =>
+      this.auth.googleAuthLoginPopup().pipe(
+        mergeMap(userCredentials => [
+          new AuthRegister(userCredentials.user),
+          new AuthLoginSuccess(userCredentials.user)
+        ]),
+        catchError(err => {
+          logger.error(err);
+          return of(new AuthLoginFailed(err));
+        })
+      )
+    )
   );
 
   /**
@@ -52,28 +55,34 @@ export class AuthEffects {
   @Effect()
   register$ = this.actions$.pipe(
     ofType(AuthActionTypes.REGISTER),
-    mergeMap((action: AuthRegister) => this.user.create(action.payload)),
-    map((createUserResponse: CreateUserResponse) =>
-      // if we "created" a new registered user emit success, otherwise
-      // emit that we only "updated" the existing user who logged in
-      createUserResponse.newUser
-        ? new AuthRegisterSuccess()
-        : new AuthRegisterOnlyUpdateSuccess()
-    ),
-    catchError(err => {
-      logger.error(err);
-      return of(new AuthRegisterFailed());
-    })
+    mergeMap((action: AuthRegister) =>
+      this.user.create(action.payload).pipe(
+        map((createUserResponse: CreateUserResponse) =>
+          // if we "created" a new registered user emit success, otherwise
+          // emit that we only "updated" the existing user who logged in
+          createUserResponse.newUser
+            ? new AuthRegisterSuccess()
+            : new AuthRegisterOnlyUpdateSuccess()
+        ),
+        catchError(err => {
+          logger.error(err);
+          return of(new AuthRegisterFailed());
+        })
+      )
+    )
   );
 
   @Effect()
   logout$ = this.actions$.pipe(
     ofType(AuthActionTypes.LOGOUT),
-    mergeMap(() => this.auth.logout()),
-    map(() => new AuthLogoutSuccess()),
-    catchError(err => {
-      logger.error(err);
-      return of(new AuthLogoutFailed());
-    })
+    mergeMap(() =>
+      this.auth.logout().pipe(
+        map(() => new AuthLogoutSuccess()),
+        catchError(err => {
+          logger.error(err);
+          return of(new AuthLogoutFailed());
+        })
+      )
+    )
   );
 }
