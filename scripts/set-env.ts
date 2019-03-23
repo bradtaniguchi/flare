@@ -13,7 +13,9 @@ const revision = getRevision();
 console.log('got hash');
 const targetPath = `./src/app/config.ts`;
 const envConfigFile = `
-export const CONFIG = {
+import { Config } from './models/config';
+
+export const CONFIG: Config = {
   revision: "${revision}",
   date: "${new Date()}",
   firebase: {

@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { CONFIG } from './config';
 import { logger } from './core/logger';
+import { validateEnv } from './core/env-validator';
 
 @Component({
   selector: 'app-root',
@@ -29,8 +30,8 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.state$ = this.store.pipe(select(state => state));
     if (!environment.production) {
-      logger.log('config', CONFIG);
-      if (CONFIG.firebase.apiKey === 'undefined') {
+      logger.log('config: ', CONFIG);
+      if (validateEnv(CONFIG)) {
         logger.error('missing API key in firebase config, app wont work');
       }
     }
