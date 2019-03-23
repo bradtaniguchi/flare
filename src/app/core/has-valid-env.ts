@@ -6,7 +6,7 @@ import { Config } from '../models/config';
  * rest of the project. This file is generated from environment variables
  * set at the root of the project.
  */
-export const validateEnv = (config: Config): boolean => {
+export const hasValidEnv = (config: Config): boolean => {
   const keys = [
     'apiKey',
     'authDomain',
@@ -15,7 +15,5 @@ export const validateEnv = (config: Config): boolean => {
     'storageBucket',
     'messagingSenderId'
   ];
-  return (
-    !!config.firebase && keys.every(key => config.firebase[key] !== undefined)
-  );
+  return !!config.firebase && keys.every(key => config.firebase[key]);
 };
