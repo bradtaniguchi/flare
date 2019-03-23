@@ -18,6 +18,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { DashboardReducer } from 'src/app/app-store/dashboard/dashboard.reducer';
 import { DashboardEffects } from 'src/app/app-store/dashboard/dashboard.effects';
+import { GroupCardModule } from 'src/app/shared/group-card/group-card.module';
 
 @NgModule({
   declarations: [DashboardComponent],
@@ -37,6 +38,7 @@ import { DashboardEffects } from 'src/app/app-store/dashboard/dashboard.effects'
     // app modules
     SpinnerModule,
     FormSectionHeaderModule,
+    GroupCardModule,
     // angular material
     FlexLayoutModule,
     MatCardModule

@@ -6,7 +6,6 @@ import { RoleTypes } from 'src/app/config/roles';
 import { Group } from 'src/app/models/group';
 import { GroupPermission } from 'src/app/models/group-permission';
 import { User } from 'src/app/models/user';
-
 @Injectable({
   providedIn: 'root'
 })
@@ -59,4 +58,59 @@ export class GroupSecurityService {
     qs.forEach(doc => batch.delete(doc.ref));
     return batch.commit();
   }
+
+  /**
+   * Utiility method that returns the first permission matching
+   * the given group.
+   * @param params general params
+   */
+  private getPermission(
+    params: CommonPermissionParams
+  ): GroupPermission | undefined {
+    const { permissions, group } = params;
+    const groupId = typeof group === 'string' ? group : group.uid;
+    return permissions.find(permission => permission.groupId === groupId);
+  }
+
+  /**
+   * If the user can leave the given group, according to their permissions.
+   * Returns true if the user has any permissions within the group
+   * @param params general params
+   */
+  public canLeave(params: CommonPermissionParams): boolean {
+    return !!this.getPermission(params);
+  }
+
+  /**
+   * If the user can edit cards, only admins and editors can do this
+   * @param params general params
+   */
+  public canEditCards(params: CommonPermissionParams): boolean {
+    const permission = this.getPermission(params);
+    return (
+      permission &&
+      (permission.type === RoleTypes.Admin ||
+        permission.type === RoleTypes.Editor)
+    );
+  }
+
+  /**
+   * If the user is an admin
+   * @param params general params
+   */
+  public isAdmin(params: CommonPermissionParams): boolean {
+    const permission = this.getPermission(params);
+    return permission && permission.type === RoleTypes.Admin;
+  }
+}
+
+export interface CommonPermissionParams {
+  /**
+   * The permissions the user has, that we are checking against
+   */
+  permissions: GroupPermission[];
+  /**
+   * The group we are checking against
+   */
+  group: Group | string;
 }

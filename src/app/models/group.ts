@@ -26,4 +26,9 @@ export interface Group extends GenericModel {
    * The number of decks this group has
    */
   deckCount?: number;
+
+  /**
+   * The number of users this group has.
+   */
+  userCount?: number;
 }

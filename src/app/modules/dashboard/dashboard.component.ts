@@ -60,8 +60,10 @@ import { AppState } from 'src/app/app-store/app-state';
               <ng-container *ngIf="!groups.length">
                 <p>There was an error getting groups</p>
               </ng-container>
-              <app-dashboard-group *ngFor="let group of groups" [group]="group">
-              </app-dashboard-group>
+              <!-- <app-dashboard-group *ngFor="let group of groups" [group]="group">
+              </app-dashboard-group> -->
+              <app-group-card *ngFor="let group of groups" [group]="group">
+              </app-group-card>
             </ng-container>
           </app-spinner-container>
         </div>

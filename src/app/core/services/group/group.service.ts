@@ -9,6 +9,7 @@ import { User } from 'src/app/models/user';
 import { CreateGroupForm } from 'src/app/modules/group-create/create-group-form';
 import { GroupSecurityService } from '../group-security/group-security.service';
 import { logger } from '../../logger';
+import { GroupPermission } from 'src/app/models/group-permission';
 
 @Injectable({
   providedIn: 'root'
