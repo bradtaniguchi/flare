@@ -5,11 +5,26 @@ import { UserResolver } from 'src/app/core/resolvers/user.resolver';
 
 const routes: Routes = [
   {
+    path: 'create',
+    loadChildren: '../group-create/group-create.module#GroupCreateModule',
+    pathMatch: 'full'
+  },
+  {
+    path: ':groupId/decks',
+    loadChildren: '../deck-list/deck-list.module#DeckListModule',
+    pathMatch: 'full'
+  },
+  {
     path: '',
     component: GroupListComponent,
     resolve: {
       user: UserResolver
-    }
+    },
+    pathMatch: 'full'
+  },
+  {
+    path: '**',
+    redirectTo: ''
   }
 ];
 

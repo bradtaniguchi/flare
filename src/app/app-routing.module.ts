@@ -55,15 +55,8 @@ const routes: Routes = [
         loadChildren: './modules/deck-edit/deck-edit.module#DeckEditModule'
       },
       {
-        path: 'groups/create',
-        loadChildren:
-          './modules/group-create/group-create.module#GroupCreateModule',
-        pathMatch: 'full'
-      },
-      {
         path: 'groups',
-        loadChildren: './modules/group-list/group-list.module#GroupListModule',
-        pathMatch: 'full'
+        loadChildren: './modules/group-list/group-list.module#GroupListModule'
       },
       {
         path: 'dashboard',

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import { of } from 'rxjs';
-import { catchError, map, mergeMap } from 'rxjs/operators';
+import { catchError, map, mergeMap, filter } from 'rxjs/operators';
 import { AppState } from 'src/app/app-store/app-state';
 import { logger } from 'src/app/core/logger';
 import { DeckService } from 'src/app/core/services/deck/deck.service';
@@ -27,6 +27,8 @@ export class DashboardEffects {
   @Effect()
   searchDecks$ = this.store.pipe(
     select(state => state.auth.user),
+    // we only want to get items if the user exists
+    filter(user => !!user),
     mergeMap(user =>
       this.deck.list({
         user,

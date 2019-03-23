@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ControlContainer, NgForm, FormControl } from '@angular/forms';
+import { ControlContainer, FormControl, NgForm } from '@angular/forms';
 import { Group } from 'src/app/models/group';
+import { logger } from 'src/app/core/logger';
 
 @Component({
   selector: 'app-group-list-field',
@@ -8,6 +9,7 @@ import { Group } from 'src/app/models/group';
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Group</mat-label>
       <mat-select
+        [value]="group"
         [formControl]="control"
         [compareWith]="compareWith"
         matInput
@@ -42,7 +44,14 @@ export class GroupListFieldComponent implements OnInit {
     return group ? group.name : undefined;
   }
 
-  compareWith(group1: Group, group2: Group) {
-    return group1 && group2 && group1.uid === group2.uid;
+  compareWith(group1: Group | string, group2: Group | string): boolean {
+    if (!group1 || !group2) {
+      return false;
+    }
+    const getUid = (group: Group | string) =>
+      typeof group === 'string' ? group : group.uid;
+    const group1Uid = getUid(group1);
+    const group2Uid = getUid(group2);
+    return group1Uid === group2Uid;
   }
 }

@@ -6,7 +6,7 @@ import { Group } from 'src/app/models/group';
 import { logger } from 'src/app/core/logger';
 import { GroupService } from 'src/app/core/services/group/group.service';
 import { User } from 'src/app/models/user';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { share, startWith, map } from 'rxjs/operators';
 
 @Component({
@@ -44,7 +44,8 @@ export class GroupListComponent implements OnInit {
   constructor(
     private store: Store<AppState>,
     private route: ActivatedRoute,
-    private groupService: GroupService
+    private groupService: GroupService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -63,16 +64,12 @@ export class GroupListComponent implements OnInit {
   }
 
   info(group: Group) {
-    logger.log('clicked on info for group');
+    logger.log('clicked on info for group', group);
+    this.router.navigateByUrl(`/groups/${group.uid}/decks`);
   }
 
   join(group: Group, groups: Group[]) {
     logger.log('join called');
-    // this.store.dispatch(
-    //   new JoinGroup({
-    //     group
-    //   })
-    // );
   }
 
   leave(group: Group, groups: Group[]) {
