@@ -12,7 +12,11 @@ import { User } from 'src/app/models/user';
 export class GroupSecurityService {
   constructor(private db: AngularFirestore) {}
 
-  public getUsersGroups(user: User): Observable<GroupPermission[]> {
+  /**
+   * Returns the users groups
+   * @param user the user to get the groups for
+   */
+  public getUsersPermissions(user: User): Observable<GroupPermission[]> {
     return user
       ? this.db
           .collection<GroupPermission>(Collections.Permissions, ref =>

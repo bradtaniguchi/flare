@@ -55,7 +55,7 @@ export class GroupService {
     const { user, queryFn } = params;
     // get all groups for the current user
     // for now just return all groups!
-    return this.groupSecurity.getUsersGroups(user).pipe(
+    return this.groupSecurity.getUsersPermissions(user).pipe(
       map(permissions =>
         permissions.map(permission => permission.groupId).filter(_ => _)
       ),

@@ -11,16 +11,24 @@ import { NotifyEffects } from './notify/notify.effects';
 import { SyncReducer } from './sync/sync.reducer';
 import { UserEffects } from './user/user.effects';
 import { UserReducer } from './user/user.reducer';
+import { GroupEffects } from './groups/group.effects';
+import { GroupReducer } from './groups/group.reducer';
 
 @NgModule({
   declarations: [],
   imports: [
-    EffectsModule.forRoot([AuthEffects, NotifyEffects, UserEffects]),
+    EffectsModule.forRoot([
+      AuthEffects,
+      NotifyEffects,
+      UserEffects,
+      GroupEffects
+    ]),
     StoreModule.forRoot<AppState>({
       auth: AuthReducer,
       loading: LoadingReducer,
       sync: SyncReducer,
-      users: UserReducer
+      users: UserReducer,
+      group: GroupReducer
     }),
     environment.production ? [] : StoreDevtoolsModule.instrument()
   ]
