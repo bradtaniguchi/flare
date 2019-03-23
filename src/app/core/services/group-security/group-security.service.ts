@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { Group } from 'src/app/models/group';
-import { User } from 'src/app/models/user';
+import { Observable, of } from 'rxjs';
 import { Collections } from 'src/app/config/collections';
-import { GroupPermission } from 'src/app/models/group-permission';
 import { RoleTypes } from 'src/app/config/roles';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Group } from 'src/app/models/group';
+import { GroupPermission } from 'src/app/models/group-permission';
+import { User } from 'src/app/models/user';
 
 @Injectable({
   providedIn: 'root'
@@ -15,11 +14,13 @@ export class GroupSecurityService {
   constructor(private db: AngularFirestore) {}
 
   public getUsersGroups(user: User): Observable<GroupPermission[]> {
-    return this.db
-      .collection<GroupPermission>(Collections.Permissions, ref =>
-        ref.where('userId', '==', user.uid)
-      )
-      .valueChanges();
+    return user
+      ? this.db
+          .collection<GroupPermission>(Collections.Permissions, ref =>
+            ref.where('userId', '==', user.uid)
+          )
+          .valueChanges()
+      : of([]);
   }
 
   /**

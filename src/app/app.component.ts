@@ -4,6 +4,7 @@ import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { CONFIG } from './config';
+import { logger } from './core/logger';
 
 @Component({
   selector: 'app-root',
@@ -16,10 +17,6 @@ import { CONFIG } from './config';
       </mat-sidenav>
       <mat-sidenav-content>
         <router-outlet></router-outlet>
-        <!--<pre>
-          {{ state$ | async | json }}
-        </pre
-        >-->
       </mat-sidenav-content>
     </mat-sidenav-container>
   `,
@@ -32,7 +29,10 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.state$ = this.store.pipe(select(state => state));
     if (!environment.production) {
-      console.log('config', CONFIG);
+      logger.log('config', CONFIG);
+      if (CONFIG.firebase.apiKey === 'undefined') {
+        logger.error('missing API key in firebase config, app wont work');
+      }
     }
   }
 }
