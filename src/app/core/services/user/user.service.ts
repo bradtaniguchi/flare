@@ -61,7 +61,6 @@ export class UserService extends GenericDbService {
    * @param user the user that is a returning user
    */
   private updateReturning(user: firebase.User): Observable<CreateUserResponse> {
-    logger.log('Updating returning user: ', user);
     return from(
       this.db
         .collection(Collections.Users)
